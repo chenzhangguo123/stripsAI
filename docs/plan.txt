@@ -1,0 +1,4 @@
+WorkPlan
+
+1) Check if everything is legal (all furniture in final position, exists in start position)
+2) 
