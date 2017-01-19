@@ -1,4 +1,66 @@
 WorkPlan
 
 1) Check if everything is legal (all furniture in final position, exists in start position)
-2) 
+
+2) The STRIPS plan: 
+So we have a list of Actions and Condotions
+There are only 6 actions, already defined in the HW instructions:
+	0. MoveLeft(rect)
+	1. MoveRight(rect)
+	2. MoveUp(rect)
+	3. MoveDown(rect)
+	4. RotateLeft(rect)
+	5. RotateRight(rect)
+
+We can define the conditions ourselves, as we like:
+	0. // ... deleted
+	1. CanMoveUp(rect): // rect can move one step up
+	2. CanMoveDown(rect): // rect can move one step down
+	3. CanMoveLeft(rect): // rect can move one step left
+	4. CanMoveRight(rect): // rect can move one step right
+	5. CanRotateRight(rect): // there is enough space to make right rotation
+	5. CanRotateLeft(rect): // there is enough space to make left rotation
+	7. Rotated(rect1,rect2): // rect1 is rotated related to rect2
+	8. InSpace(rect,space): // rect is somewhere inside space
+	11. IsLower(rect1,rect2): // rect1 is lower then rect2
+	12. IsHigher(rect1,rect2): // rect1 is higher then rect2
+	13. IsToTheLeft(rect1,rect2): // rect1 is to the left of rect2
+	14. IsToTheRight(rect1,rect2): // rect1 is to the right of rect2
+
+Now lets add the definition of our Conditions to our Actions
+What Preconditions do we need to preform each action?
+	0. MoveLeft(rect)
+		- 3. CanMoveLeft(rect)
+	1. MoveRight(rect)
+		- 4. CanMoveRight(rect)
+	2. MoveUp(rect)
+		- 1. CanMoveUp(rect)
+	3. MoveDown(rect)
+		- 2. CanMoveDown(rect):
+	4. RotateLeft(rect)
+		- 5. CanRotateLeft(rect):
+	5. RotateRight(rect)
+		- CanRotateRight(rect):
+
+Goal Stack and heuristic function: 
+ When we have a problem, we have to pake Goal Stack to solve it. 
+ If the Goal stack is empty, it means that we solved the problem.
+ But for solving the problem we need to have a heuristic function to tell us
+exactly what we do in each case. 
+
+Case 1: rect1 and targed1 are in the same room1:
+	Preconditions:	
+		InSpace(rect1,room1) = true
+		Rotated(rect1,targed1) = ?
+		CanMoveUp(rect) = ?
+		CanMoveDown(rect) = ?
+		CanMoveLeft(rect) = ?
+		CanMoveRight(rect) = ?
+		IsLower(rect1,targed1) = ?
+		IsHigher(rect1,targed1) = ?
+		IsToTheLeft(rect1,targed1) = ?
+		IsToTheRight(rect1,targed1) = ?
+
+	Goal: 
+
+

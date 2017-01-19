@@ -18,9 +18,7 @@ public class StripsEngine {
 /* ----------------------------- Public Methods ---------------------------- */
 
 	public void solve(ArrayList<MyRec> start, ArrayList<MyRec> finish){
-		api.rotateRight();
-		api.moveOneStepRight();
-		api.rotateRight();
+]		// TODO ...
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */
