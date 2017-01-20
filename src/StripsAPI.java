@@ -1,5 +1,3 @@
-package stripsMain;
-
 public class StripsAPI { //SingleTon
 
 /* -------------------------------- fields *-------------------------------- */

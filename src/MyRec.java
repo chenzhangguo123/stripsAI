@@ -54,6 +54,43 @@ public class MyRec extends Rectangle{
 		edge2=this.y2-this.y1;
 		//System.out.println(x1+" "+x2+" "+y1+" "+y2);
 	}
+	
+	public int getX1(){
+		return this.x1;
+	}
+	
+	public int getX2(){
+		return this.x2;
+	}
+	
+	public int getY1(){
+		return this.y1;
+	}
+	
+	public int getY2(){
+		return this.y2;
+	}
+	
+	public void moveToRight(){
+		this.x1++;
+		this.x2++;
+	}
+	
+	public void moveToLeft(){
+		this.x1--;
+		this.x2--;
+	}
+	
+	public void moveUp(){
+		this.y1++;
+		this.y2++;
+	}
+	
+	public void moveDown(){
+		this.y1--;
+		this.y2--;
+	}
+	
 	public boolean checkEdges(MyRec rec) {
 		//System.out.println(rec.edge1+" "+this.edge1+" "+rec.edge2+" "+this.edge2);
 		if(this.edge1==rec.edge1){

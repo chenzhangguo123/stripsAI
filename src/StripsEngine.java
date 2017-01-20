@@ -1,10 +1,12 @@
-package stripsMain;
+
+
+import java.util.ArrayList;
 
 public class StripsEngine {
 
 /* -------------------------------- fields *-------------------------------- */
 
-	private stripsAPI api;
+	private StripsAPI api;
 	
 /* ---------------------------- Constant Values ---------------------------- */
 
@@ -12,14 +14,14 @@ public class StripsEngine {
 
 /* ---------------------------- Object Construction ------------------------ */
 
-	public StripsEngine(StripsApi myApi){
+	public StripsEngine(StripsAPI myApi){
 		api = myApi;
 	}
 	
 /* ----------------------------- Public Methods ---------------------------- */
 
 	public void solve(ArrayList<MyRec> start, ArrayList<MyRec> finish){
-]		// TODO ...
+		// TODO ...
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */

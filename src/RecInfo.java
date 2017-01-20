@@ -38,4 +38,12 @@ public class RecInfo {
 		double dis=Math.sqrt((x1-x3)*(x1-x3)+(y1-y3)*(y1-y3));
 		return dis;
 	}
+	
+	public int getX1(){
+		return x1;
+	}
+	
+	public int getY1(){
+		return y1;
+	}
 }

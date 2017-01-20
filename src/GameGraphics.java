@@ -67,6 +67,46 @@ public class GameGraphics implements Initializable{
 		System.out.println("started");
 	}
     
+    private void makeMove(MyRec rectangle){
+    	int x1 = rectangle.getX1();
+    	int x2 = rectangle.getX2();
+    	int y1 = rectangle.getY1();
+    	int y2 = rectangle.getY2();
+		board1.getChildren().remove(rectangle);
+		try{
+			setRec(rectangle,x1,x2,y1,y2,true);  
+	    	board1.getChildren().addAll(rectangle);
+		}
+		catch(Exception ex){ System.out.println("Something is wrong");}
+        finally{
+        	
+        }     
+    }
+    
+    public void moveRight(RecInfo source){
+		MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveToRight();
+    	makeMove(rectangle);
+    }
+    
+    public void moveLeft(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveToLeft();
+    	makeMove(rectangle);
+    }
+    
+    public void moveUp(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveUp();
+    	makeMove(rectangle);
+    }
+    
+    public void moveDown(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveDown();
+    	makeMove(rectangle);
+    }
+    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	help.setOnAction(
@@ -92,7 +132,7 @@ public class GameGraphics implements Initializable{
     	            }
     	         });
     	for(int i=0; i<360*19;i+=19) {
-    		double sI=(double)(i%360);
+    		double sI=(double)(209%360);
     		double sISB=(sI/360*30+70)/100;
     		cL.add(Color.hsb(sI, sISB, sISB));		
     	}
@@ -330,12 +370,27 @@ public class GameGraphics implements Initializable{
 	}
 	private MyRec getRecInPoint(double cY, double cX, List<MyRec> tFur, boolean isBoard1) {
 		for(MyRec rec:tFur){
-			
 			double x=getRecX(rec,isBoard1);
 			double y=getRecY(rec,isBoard1);
-			
+			System.out.println(cX);
+			System.out.println(cY);
+			System.out.println(x);
+			System.out.println(y);
 			if(cX>=x&&cX<=(x+rec.getWidth())&&cY>=y&&cY<=(y+rec.getHeight()))
 				return rec;
+		}
+		return null;
+	}
+	
+	private MyRec getRectangleByPoint(int xPoint, int yPoint, List<MyRec> boardList){
+		for(MyRec rec:boardList){
+			int x1 = rec.getX1();
+			int x2 = rec.getX2();
+			int y1 = rec.getY1();
+			int y2 = rec.getY2();
+			if (xPoint <= x2 && xPoint >= x1 && yPoint <= y2 && yPoint >= y1){
+				return rec;
+			}
 		}
 		return null;
 	}
