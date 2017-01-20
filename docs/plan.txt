@@ -79,5 +79,7 @@ Case 1: simple case for rect1 and targed1
 	
 /******************************************************/
 What i need from graphics:
-1) void Move(RecInfo source, RecInfo dest)
-2) void IsFree(RecInfo space)
+DONE void Move(RecInfo source, RecInfo dest)
+DONE boolean IsFree(RecInfo space)
+
+TODO ArrayList<Problem> getProblems()
