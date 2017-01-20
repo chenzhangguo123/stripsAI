@@ -1,10 +1,8 @@
 
-public class StripsAPI { //SingleTon
-
+public class StripsAPI {
 /* -------------------------------- fields *-------------------------------- */
 	
-	//For Singleton definition
-	private static StripsAPI ourInstance = new StripsAPI();
+	//The Board will be added here
 
 /* ---------------------------- Constant Values ---------------------------- */
 
@@ -28,8 +26,7 @@ public class StripsAPI { //SingleTon
 
 /* ---------------------------- Object Construction ------------------------ */
 
-	// Empty private constructor for singleTon
-	private StripsAPI(){
+	public StripsAPI(){
 		debugPrint(DEBUG_CLASS,"In constructor");
 	}
 
@@ -61,7 +58,7 @@ public class StripsAPI { //SingleTon
 	 * @param space - the space we want to check 
 	 * @return : true if the rectangle is fully covered by the space 
 	 */
-	public boolean InSpaceCondition(RecInfo rec, RecInfo space){
+	public boolean InSpace(RecInfo rec, RecInfo space){
 		return false;
 	}
 
@@ -69,8 +66,8 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean InPlaceCondition(RecInfo rect,RecInfo place){
-		debugPrint(DEBUG_FUNCTION,"In function InPlaceCondition");
+	public boolean InPlace(RecInfo rect,RecInfo place){
+		debugPrint(DEBUG_FUNCTION,"In function InPlace");
 		return false;
 	}
 
@@ -78,7 +75,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean CanMoveUpCondition(RecInfo rect){
+	public boolean CanMoveUp(RecInfo rect){
 		return false;
 	} // rect can move one step up
 	
@@ -86,7 +83,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean CanMoveDownCondition(RecInfo rect){
+	public boolean CanMoveDown(RecInfo rect){
 		return false;
 	} // rect can move one step down
 
@@ -94,7 +91,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */	
-	public boolean CanMoveLeftCondition(RecInfo rect){
+	public boolean CanMoveLeft(RecInfo rect){
 		return false;
 	} // rect can move one step left
 	
@@ -102,7 +99,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */	
-	public boolean CanMoveRightCondition(RecInfo rect){
+	public boolean CanMoveRight(RecInfo rect){
 		return false;
 	} // rect can move one step right
 	
@@ -110,7 +107,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean CanRotateRightCondition(RecInfo rect){
+	public boolean CanRotateRight(RecInfo rect){
 		return false;
 	} // there is enough space to make right rotation
 	
@@ -118,7 +115,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean CanRotateLeftCondition(RecInfo rect){
+	public boolean CanRotateLeft(RecInfo rect){
 		return false;
 	} // there is enough space to make left rotation
 	
@@ -126,7 +123,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean RotatedCondition(RecInfo rect1, RecInfo rect2){
+	public boolean Rotated(RecInfo rect1, RecInfo rect2){
 		return false;
 	} // rect1 is rotated related to rect2
 	
@@ -134,7 +131,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean IsLowerCondition(RecInfo rect1, RecInfo rect2){
+	public boolean IsLower(RecInfo rect1, RecInfo rect2){
 		return false;
 	} // rect1 is lower then rect2
 	
@@ -142,7 +139,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean IsHigherCondition(RecInfo rect1, RecInfo rect2){
+	public boolean IsHigher(RecInfo rect1, RecInfo rect2){
 		return false;
 	} // rect1 is higher then rect2
 	
@@ -150,7 +147,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean IsToTheLeftCondition(RecInfo rect1, RecInfo rect2){
+	public boolean IsToTheLeft(RecInfo rect1, RecInfo rect2){
 		return false;
 	} // rect1 is to the left of rect2
 	
@@ -158,7 +155,7 @@ public class StripsAPI { //SingleTon
 	 * @param
 	 * @return
 	 */
-	public boolean IsToTheRightCondition(RecInfo rect1, RecInfo rect2){
+	public boolean IsToTheRight(RecInfo rect1, RecInfo rect2){
 		return false;
 	} // rect1 is to the right of rect2
 
@@ -168,51 +165,50 @@ public class StripsAPI { //SingleTon
 	/**
 	 * @param
 	 */
-	public void RotateRightAction(RecInfo rect){
+	public void RotateRight(RecInfo rect){
 
 	}
 	
 	/**
 	 * @param
 	 */
-	public void RotateLeftAction(RecInfo rect){
+	public void RotateLeft(RecInfo rect){
 	
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveRightAction(RecInfo rec){
-		debugPrint(DEBUG_FUNCTION,"In function MoveRightAction");
+	public void MoveRight(RecInfo rec){
+		debugPrint(DEBUG_FUNCTION,"In function MoveRight");
 	}
 	
 	/**
 	 * @param
 	 */	
-	public void MoveLeftAction(RecInfo rec){
-		debugPrint(DEBUG_FUNCTION,"In function MoveLeftAction");
+	public void MoveLeft(RecInfo rec){
+		debugPrint(DEBUG_FUNCTION,"In function MoveLeft");
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveUpAction(RecInfo rec){
-		debugPrint(DEBUG_FUNCTION,"In function MoveUpAction");
+	public void MoveUp(RecInfo rec){
+		debugPrint(DEBUG_FUNCTION,"In function MoveUp");
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveDownAction(RecInfo rec){
-		debugPrint(DEBUG_FUNCTION,"In function MoveDownAction");
+	public void MoveDown(RecInfo rec){
+		debugPrint(DEBUG_FUNCTION,"In function MoveDown");
 	}
-	
-	
+
 /* ----------------------------- Object Methods ---------------------------- */
 
 /* ---------------------------- Private Methods ---------------------------- */
 
-	private void debugPrint(int debugLevel, String debugText){
+	private static void debugPrint(int debugLevel, String debugText){
 		if(debugLevel == CURRENT_DEBUG_LEVEL || debugLevel == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);

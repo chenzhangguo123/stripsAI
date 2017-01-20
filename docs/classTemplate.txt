@@ -1,32 +1,27 @@
-import java.util.Stack;
-import java.util.ArrayList;
+/*
 
-public class StripsEngine {
+package ilyaandvladi.dietappv05;
 
-/* -------------------------------- fields *-------------------------------- */
+ *** Class Template - Code devision to sections
 
-	private StripsAPI api;
-	private 
-	
+
+ public class X {
+
+/* -------------------------------- fields --------------------------------- */
+
 /* ---------------------------- Constant Values ---------------------------- */
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
 /* ---------------------------- Object Construction ------------------------ */
 
-	public StripsEngine(){
-		// Will get the Board
-		this.api = new StripsAPI();
-	}
-	
 /* ----------------------------- Public Methods ---------------------------- */
-
-	public void solve(ArrayList<MyRec> start, ArrayList<MyRec> finish){
-		// TODO ...
-	}
 
 /* ----------------------------- Object Methods ---------------------------- */
 
 /* ---------------------------- Private Methods ---------------------------- */
 
- } // End of Class StripsEngine ----------------------------------------------- //
+ } // End of Class X ------------------------------------------------------- //
+
+
+*/
