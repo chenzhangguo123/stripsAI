@@ -2,7 +2,7 @@
 public class StripsAPI {
 /* -------------------------------- fields *-------------------------------- */
 	
-	//The Board will be added here
+	private GameGraphics game;
 
 /* ---------------------------- Constant Values ---------------------------- */
 
@@ -26,8 +26,9 @@ public class StripsAPI {
 
 /* ---------------------------- Object Construction ------------------------ */
 
-	public StripsAPI(){
+	public StripsAPI(GameGraphics game){
 		debugPrint(DEBUG_CLASS,"In constructor");
+		this.game = game;
 	}
 
 /* ----------------------------- Public Methods ---------------------------- */

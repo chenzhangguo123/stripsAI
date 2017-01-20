@@ -67,6 +67,14 @@ public class GameGraphics implements Initializable{
 		System.out.println("started");
 	}
     
+	public ArrayList<Problem> getProblems(){
+		ArrayList<Problem> problems = new ArrayList<Problem>();
+		
+		//TODO (X,u,Y)
+
+		return problems;
+	}
+
     public boolean IsFree(RecInfo space){
     	MyRec rectangle = null;
     	for(int x = space.getX1(); x <= space.getX2(); x ++){
