@@ -67,6 +67,25 @@ public class GameGraphics implements Initializable{
 		System.out.println("started");
 	}
     
+    public boolean IsFree(RecInfo space){
+    	MyRec rectangle = null;
+    	for(int x = space.getX1(); x <= space.getX2(); x ++){
+    		for(int y = space.getY1(); y <= space.getY2(); y++){
+    			rectangle = getRectangleByPoint(x, y, furL);
+    			if (rectangle != null){
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
+    
+    public void Move(RecInfo source, RecInfo dest){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
+    	makeMove(rectangle);
+    }
+    
     private void makeMove(MyRec rectangle){
     	int x1 = rectangle.getX1();
     	int x2 = rectangle.getX2();
@@ -83,7 +102,7 @@ public class GameGraphics implements Initializable{
         }     
     }
     
-    public void moveRight(RecInfo source){
+   /* public void moveRight(RecInfo source){
 		MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
     	rectangle.moveToRight();
     	makeMove(rectangle);
@@ -106,7 +125,7 @@ public class GameGraphics implements Initializable{
     	rectangle.moveDown();
     	makeMove(rectangle);
     }
-    
+    */
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	help.setOnAction(
