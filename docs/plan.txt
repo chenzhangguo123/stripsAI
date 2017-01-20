@@ -13,7 +13,7 @@ There are only 6 actions, already defined in the HW instructions:
 	5. RotateRight(rect)
 
 We can define the conditions ourselves, as we like:
-	0. // ... deleted
+	0. InPlace(rect1,place): // rect is exactly in "place"
 	1. CanMoveUp(rect): // rect can move one step up
 	2. CanMoveDown(rect): // rect can move one step down
 	3. CanMoveLeft(rect): // rect can move one step left
@@ -48,9 +48,11 @@ Goal Stack and heuristic function:
  But for solving the problem we need to have a heuristic function to tell us
 exactly what we do in each case. 
 
-Case 1: rect1 and targed1 are in the same room1:
+Case 1: simple case for rect1 and targed1 
+		when targed1 is in room 1
 	Preconditions:	
-		InSpace(rect1,room1) = true
+		InSpace(rect1,room1) = ?
+		InPlace(rect1,targed1) = ?
 		Rotated(rect1,targed1) = ?
 		CanMoveUp(rect) = ?
 		CanMoveDown(rect) = ?
@@ -61,6 +63,19 @@ Case 1: rect1 and targed1 are in the same room1:
 		IsToTheLeft(rect1,targed1) = ?
 		IsToTheRight(rect1,targed1) = ?
 
-	Goal: 
+	GoalStack: 
+		InPlace(rect1,targed1) // Main Goal
+			// SubGoals
+			Rotated(rect1,targed1) = false
+			IsToTheLeft(rect1,targed1) = false
+			IsToTheRight(rect1,targed1) = false
+			IsLower(rect1,targed1) = false
+			IsHigher(rect1,targed1) = false
+				// SubSubGoals
+				InSpace(rect1,room1) = true
+				InSpace(targed1,room1) = true
+
+	Heuristic (idea):
+	
 
 

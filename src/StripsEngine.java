@@ -1,3 +1,4 @@
+package stripsMain;
 
 public class StripsEngine {
 
