@@ -29,11 +29,25 @@ public class StripsEngine {
 /* ----------------------------- Public Methods ---------------------------- */
 
 	public void solve(ArrayList<Problem>){
-		// TODO ...
+		prepareGoalStack();
+		while(goalStack.empty() != true){
+			Condition currentGoal goalStack.peek();
+			if(currentGoal.getName() == IN_PLACE){
+				if(currentGoal.Check() == true){
+					goalStack.pop();
+				}else{
+					// TODO ... 
+				}
+			}
+		}
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */
 
 /* ---------------------------- Private Methods ---------------------------- */
+
+	private void prepareGoalStack(){
+
+	}
 
  } // End of Class StripsEngine ----------------------------------------------- //

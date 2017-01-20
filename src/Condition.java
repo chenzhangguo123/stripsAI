@@ -9,6 +9,7 @@ public class Condition {
 
 	private StripsAPI api;
 	private String name;
+	private boolean value;
 	private ArrayList<RecInfo> args;
 
 /* ---------------------------- Constant Values ---------------------------- */
@@ -38,15 +39,17 @@ public class Condition {
 
 /* ---------------------------- Object Construction ------------------------ */
 
-	public Condition(StripsAPI api, String name, ArrayList<RecInfo> args){
+	public Condition(StripsAPI api, String name, ArrayList<RecInfo> args, 
+						boolean value){
 		this.api = api;
 		this.name = name;
 		this.args = args;
+		this.value = value; //Desired value for current condition
 	}
 
 /* ----------------------------- Public Methods ---------------------------- */
 
-	public boolean CheckCondition(){
+	public boolean Check(){
 		switch(naem){
 			case IN_PLACE:
 				return api.InPlace(args.get(0),args.get(1));
@@ -78,6 +81,18 @@ public class Condition {
 				debugPrint(DEBUG_FUNCTION,"BUG invalid Condition");
 				return false;
 		}
+	}
+
+	public boolean getValue(){
+		return this.value;
+	}
+
+	public String getName(){
+		return this.name;
+	}
+
+	public void setValue(boolean value){
+		this.value = value;
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */

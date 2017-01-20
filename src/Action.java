@@ -87,37 +87,43 @@
 			case MOVE_LEFT:
 				Condition condition = new Condition(api,
 													Condition.CAN_MOVE_LEFT,
-													args);
+													args,
+													true);
 				preconditions.add(condition);
 				return;
 			case MOVE_RIGHT:
 				Condition condition = new Condition(api,
 													Condition.CAN_MOVE_RIGHT,
-													args);
+													args,
+													true);
 				preconditions.add(condition);	
 				return;		
 			case MOVE_UP:
 				Condition condition = new Condition(api,
 													Condition.CAN_MOVE_UP,
-													args);
+													args,
+													true);
 				preconditions.add(condition);	
 				return;			
 			case MOVE_DOWN:
 				Condition condition = new Condition(api,
 													Condition.CAN_MOVE_DOWN,
-													args);
+													args,
+													true);
 				preconditions.add(condition);		
 				return;		
 			case ROTATE_LEFT:
 				Condition condition = new Condition(api,
 													Condition.CAN_ROTATE_LEFT,
-													args);
+													args,
+													true);
 				preconditions.add(condition);		
 				return;		
 			case ROTATE_RIGHT:
 				Condition condition = new Condition(api,
 													Condition.CAN_ROTATE_RIGHT,
-													args);
+													args,
+													true);
 				preconditions.add(condition);		
 				return;
 			default: 
