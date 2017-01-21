@@ -90,7 +90,7 @@ public class Condition {
 	 * @return Check() AND desired value 	
 	 */ 
 	public boolean isSatisfied(){
-		return (Check() && desiredValue);
+		return (desiredValue == Check());
 	}
 
 	/* --- Getters --- */

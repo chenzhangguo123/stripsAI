@@ -10,6 +10,8 @@ public class StripsEngine {
 	private Stack<Condition> goalStack;
 	private ArrayList<Action> plan;
 	private ArrayList<Problem> problems;
+
+	//aux
 	private Stack<Condition> problemStack;
 
 	
