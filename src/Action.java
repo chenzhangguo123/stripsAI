@@ -67,6 +67,18 @@
 		}
 	}
 
+	/**
+	 * Method checks if all preconditions of the current Action are satisfied
+	 * @return true if all preconditions are satisfied, false else.
+	 */
+	public boolean CheckPreconditions(){
+		boolean b = true;
+		for (Condition precondition : preconditions){
+        	b = b && precondition.isSatisfied();
+      	}
+      	return b;
+	}
+
 	public ArrayList<Condition> getPreconditions(){
 		return preconditions;
 	}

@@ -9,7 +9,8 @@ public class Condition {
 
 	private StripsAPI api;
 	private String name;
-	private boolean value;
+	private boolean desiredValue; // When we set a condition, we want to 
+								  // what value we want it to be true or false
 	private ArrayList<RecInfo> args;
 
 /* ---------------------------- Constant Values ---------------------------- */
@@ -40,11 +41,11 @@ public class Condition {
 /* ---------------------------- Object Construction ------------------------ */
 
 	public Condition(StripsAPI api, String name, ArrayList<RecInfo> args, 
-						boolean value){
+						boolean desiredValue){
 		this.api = api;
 		this.name = name;
 		this.args = args;
-		this.value = value; //Desired value for current condition
+		this.desiredValue = desiredValue;
 	}
 
 /* ----------------------------- Public Methods ---------------------------- */
@@ -83,16 +84,33 @@ public class Condition {
 		}
 	}
 
-	public boolean getValue(){
-		return this.value;
+	/**
+	 * Method Checks if the condition is satisfied according to our 
+	 * desired value. 
+	 * @return Check() AND desired value 	
+	 */ 
+	public boolean isSatisfied(){
+		return (Check() && desiredValue);
+	}
+
+	/* --- Getters --- */
+
+	public boolean getDesiredValue(){
+		return this.desiredValue;
 	}
 
 	public String getName(){
 		return this.name;
 	}
 
-	public void setValue(boolean value){
-		this.value = value;
+	public ArrayList<RecInfo>() getArgs(){
+		return args;
+	}
+
+	/* --- Setters --- */
+
+	public void setDesiredValue(boolean desiredValue){
+		this.desiredValue = desiredValue;
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */
