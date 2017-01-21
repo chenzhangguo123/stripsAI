@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 /**
  * Note: in this code we assume that the input is legal
@@ -103,7 +103,7 @@ public class Condition {
 		return this.name;
 	}
 
-	public ArrayList<RecInfo>() getArgs(){
+	public ArrayList<RecInfo> getArgs(){
 		return args;
 	}
 
@@ -121,7 +121,7 @@ public class Condition {
     	s += name;
     	s += "( ";
     	for(int i=0,i<args.size(),i++){
-    		s += args.get(i).toString;
+    		s += args.get(i).toString();
     		if(i+1 != args.size()){
     			s+= ",";
     		}

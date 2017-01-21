@@ -71,10 +71,6 @@ Case 1: simple case for rect1 and targed1
 			IsToTheRight(rect1,targed1) = false
 			IsLower(rect1,targed1) = false
 			IsHigher(rect1,targed1) = false
-				// SubSubGoals
-				InSpace(rect1,room1) = true
-				InSpace(targed1,room1) = true
-
 	Heuristic (idea):
 	
 /******************************************************/
@@ -82,4 +78,4 @@ What i need from graphics:
 DONE void Move(RecInfo source, RecInfo dest)
 DONE boolean IsFree(RecInfo space)
 
-TODO ArrayList<Problem> getProblems()
+DONE ArrayList<Problem> getProblems()

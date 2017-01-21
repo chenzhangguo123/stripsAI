@@ -24,8 +24,8 @@ public class StripsEngine {
 		this.api = new StripsAPI(game);
 		this.goalStack = new Stack<Condition>();
 		this.plan = new ArrayList<Action>();
-		this.problems = getProblems();
-		this.problemStack = new Stack<Condition>;
+		this.problems = game.getProblems();
+		this.problemStack = new Stack<Condition>();
 	}
 	
 /* ----------------------------- Public Methods ---------------------------- */
@@ -49,7 +49,7 @@ public class StripsEngine {
 					/* If the new Goal is IN_PLACE type and it is not satisfied,
 					 * Then we will add SubGoals to our GoalStack
 					 */
-					case IN_PLACE:
+					case Condition.IN_PLACE:
 						/* If we face a new problem that we never seen before
 						 * add it to the problemStack
 						 */
@@ -63,10 +63,10 @@ public class StripsEngine {
 							3.	IS_TO_THE_RIGHT(rect1,targed1) = false
 							4.	IS_LOWER(rect1,targed1) = false
 							5.	IS_HIGHER(rect1,targed1) = false
-							6.  IN_SPACE(source,ROOM(targed)) = true - They must
+							6.  IN_SPACE(source,ROOM(targsed)) = true - They must
 								in the same room
 						 */
-						ArrayList<RecInfo>() furniture = currentGoal.getArgs();
+						ArrayList<RecInfo> furniture = currentGoal.getArgs();
 						Condition newGoal = new Condition(api,
 														  Condition.ROTATED,
 														  furniture,false);
@@ -102,44 +102,44 @@ public class StripsEngine {
 					 * apply an Action, but we ran in to an Obstacle 
 					 * see handleObstacleCase() bellow
 					 */
-					case CAN_MOVE_UP:
+					case Condition.CAN_MOVE_UP:
 						handleObstacleCase(Action.MOVE_UP);
 						break;
-					case CAN_MOVE_DOWN:
+					case Condition.CAN_MOVE_DOWN:
 						handleObstacleCase(Action.MOVE_DOWN);
 						break;
-					case CAN_MOVE_LEFT:
+					case Condition.CAN_MOVE_LEFT:
 						handleObstacleCase(Action.MOVE_LEFT);
 						break;
-					case CAN_MOVE_RIGHT:
+					case Condition.CAN_MOVE_RIGHT:
 						handleObstacleCase(Action.MOVE_RIGHT);
 						break;
-					case CAN_ROTATE_RIGHT:
+					case Condition.CAN_ROTATE_RIGHT:
 						handleObstacleCase(Action.ROTATE_RIGHT);
 						break;
-					case CAN_ROTATE_LEFT:
+					case Condition.CAN_ROTATE_LEFT:
 						handleObstacleCase(Action.ROTATE_LEFT);
 						break;
-					case IN_SPACE: 
+					case Condition.IN_SPACE: 
 						moveBetweenRooms();
 						break;
 
 					/* Here we start to deal with Actions
 					 * see handleActionCase() below
 					 */
-					case ROTATED: 
+					case Condition.ROTATED: 
 						handleActionCase(Action.ROTATE_LEFT);
 						break;
-					case IS_LOWER: 
+					case Condition.IS_LOWER: 
 						handleActionCase(Action.MOVE_UP);
 						break;
-					case IS_HIGHER: 
+					case Condition.IS_HIGHER: 
 						handleActionCase(Action.MOVE_DOWN);
 						break;
-					case IS_TO_THE_LEFT: 
+					case Condition.IS_TO_THE_LEFT: 
 						handleActionCase(Action.MOVE_LEFT);
 						break;
-					case IS_TO_THE_RIGHT: 
+					case Condition.IS_TO_THE_RIGHT: 
 						handleActionCase(Action.MOVE_RIGHT);
 						break;
 					default:
@@ -215,7 +215,7 @@ public class StripsEngine {
 	 *
 	 */
 	private void handleObstacleCase(String action){
-		currentProblem = problemStack.peek();
+		Condition currentProblem = problemStack.peek();
 		RecInfo source = currentProblem.getArgs().get(0);
 		RecInfo targed = currentProblem.getArgs().get(1);
 		RecInfo obstacle = api.getObstacle(source,
@@ -233,14 +233,14 @@ public class StripsEngine {
 		args = new ArrayList<RecInfo>();
 		args.add(source);
 		args.add(targed);
-		Condition newGoal = new Condition(api,
+		newGoal = new Condition(api,
 										  Condition.IN_PLACE,
 										  args,true);
 		goalStack.push(newGoal);
 		args = new ArrayList<RecInfo>();
 		args.add(obstacle);
 		args.add(tmpPlace);
-		Condition newGoal = new Condition(api,
+		newGoal = new Condition(api,
 										  Condition.IN_PLACE,
 										  args,true);
 		goalStack.push(newGoal);

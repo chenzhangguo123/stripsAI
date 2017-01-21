@@ -1,6 +1,6 @@
- 
+import java.util.ArrayList;
 
- /**
+/**
   * Note: In this code we assume that we get the right input
   */
  public class Action {
@@ -87,7 +87,7 @@
 
     @Override 
     public String toString() {
-    	return name + "(" + furniture.toString + ")";
+    	return name + "(" + furniture.toString() + ")";
     }
 
 /* ---------------------------- Private Methods ---------------------------- */
@@ -95,52 +95,48 @@
 	private void setPreconditions(){
 		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
 		args.add(furniture);
+		Condition condition = null;
 		switch(name){
 			case MOVE_LEFT:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_MOVE_LEFT,
 													args,
 													true);
-				preconditions.add(condition);
-				return;
+				break;
 			case MOVE_RIGHT:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_MOVE_RIGHT,
 													args,
 													true);
-				preconditions.add(condition);	
-				return;		
+				break;		
 			case MOVE_UP:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_MOVE_UP,
 													args,
 													true);
-				preconditions.add(condition);	
-				return;			
+				break;			
 			case MOVE_DOWN:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_MOVE_DOWN,
 													args,
 													true);
-				preconditions.add(condition);		
-				return;		
+				break;		
 			case ROTATE_LEFT:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_ROTATE_LEFT,
 													args,
 													true);
-				preconditions.add(condition);		
-				return;		
+				break;		
 			case ROTATE_RIGHT:
-				Condition condition = new Condition(api,
+				condition = new Condition(api,
 													Condition.CAN_ROTATE_RIGHT,
 													args,
 													true);
-				preconditions.add(condition);		
-				return;
+				break;
 			default: 
-				return;		
+				break;		
 		}
+		preconditions.add(condition);	
 	}
 
 	private static void debugPrint(int debugLevel, String debugText){
