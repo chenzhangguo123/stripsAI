@@ -45,6 +45,69 @@ public class StripsAPI {
 		debugPrint(DEBUG_FUNCTION,"In function getRoom");
 		return ROOM1;
 	}
+
+	/**
+	 * Method returns the obstacle that prevets "rect" to allpy the action
+	 * @param rect - the rectangle we want to move
+	 * @param actionName - the name of the action we want to preform
+	 * @return - Obstacle info
+	 */
+	public RecInfo getObstacle(RecInfo rect,String actionName){
+		switch(actionName){
+			case MOVE_LEFT:		
+				// TODO
+				return;
+			case MOVE_RIGHT:
+				// TODO
+				return;		
+			case MOVE_UP:
+				// TODO				
+				return;			
+			case MOVE_DOWN:
+				// TODO
+				return;		
+			case ROTATE_LEFT:
+				// TODO
+				return;		
+			case ROTATE_RIGHT:
+				// TODO
+				return;
+			default: 
+				return;		
+		}
+	}
+
+	/**
+	 * Method calculates temprary place, in the same room, where we can 
+	 * move the Obstacle, so we will be able to preform the action
+	 */
+	public RecInfo findTempObstaclePlace(RecInfo rect, 
+									     RecInfo obstacle,
+									     String actionName){
+			switch(actionName){
+			case MOVE_LEFT:		
+				// TODO
+				return;
+			case MOVE_RIGHT:
+				// TODO
+				return;		
+			case MOVE_UP:
+				// TODO				
+				return;			
+			case MOVE_DOWN:
+				// TODO
+				return;		
+			case ROTATE_LEFT:
+				// TODO
+				return;		
+			case ROTATE_RIGHT:
+				// TODO
+				return;
+			default: 
+				return;		
+		}
+
+	}
 	
 	/************************************************************************ 
 	 *   In our implementation of STRIPS, We use a set of Conditions and 	*

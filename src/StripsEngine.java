@@ -7,9 +7,10 @@ public class StripsEngine {
 
 	private GameGraphics game;
 	private StripsAPI api;
-	private Stack<Condition> goalStack
+	private Stack<Condition> goalStack;
 	private ArrayList<Action> plan;
 	private ArrayList<Problem> problems;
+	private Stack<Condition> problemStack;
 
 	
 /* ---------------------------- Constant Values ---------------------------- */
@@ -24,27 +25,37 @@ public class StripsEngine {
 		this.goalStack = new Stack<Condition>();
 		this.plan = new ArrayList<Action>();
 		this.problems = getProblems();
+		this.problemStack = new Stack<Condition>;
 	}
 	
 /* ----------------------------- Public Methods ---------------------------- */
 
-	public void solve(){
+	public void Solve(){
 		prepareGoalStack();
 
 		/* We will continue to solve problems until our goalStack is empty */
 		while(goalStack.empty() != true){
 
 			// Lets look at our top Goal, if it is satisfied, just pop it out
-			Condition currentGoal goalStack.peek();
+			Condition currentGoal = goalStack.peek();
+			Condition currentProblem = problemStack.peek();
 			if(currentGoal.isSatisfied()){
+				if(currentGoal == currentProblem){
+					problemStack.pop();
+				}
 				goalStack.pop();
-
-			/* If the new Goal is IN_PLACE type and it is not satisfied,
-			 * Then we will add SubGoals to our GoalStack
-			 */
 			}else{
 				switch(currentGoal.getName){
+					/* If the new Goal is IN_PLACE type and it is not satisfied,
+					 * Then we will add SubGoals to our GoalStack
+					 */
 					case IN_PLACE:
+						/* If we face a new problem that we never seen before
+						 * add it to the problemStack
+						 */
+						if(currentGoal != currentProblem){
+							problemStack.push(currentGoal);
+						}
 						/* Adding 6 new Conditions to the GoalStack
 							1.  ROTATED(rect1,targed1) = false - Both must not 
 							    be rotated one related to another
@@ -86,51 +97,53 @@ public class StripsEngine {
 														  args,true);	
 						goalStack.push(newGoal);			
 						break;
+
+					/* If we reach the following cases, it means we try to  
+					 * apply an Action, but we ran in to an Obstacle 
+					 * see handleObstacleCase() bellow
+					 */
 					case CAN_MOVE_UP:
-						return api.CanMoveUp(args.get(0));
+						handleObstacleCase(Action.MOVE_UP);
+						break;
 					case CAN_MOVE_DOWN:
-						return api.CanMoveDown(args.get(0));
+						handleObstacleCase(Action.MOVE_DOWN);
+						break;
 					case CAN_MOVE_LEFT:
-						return api.CanMoveLeft(args.get(0));
+						handleObstacleCase(Action.MOVE_LEFT);
+						break;
 					case CAN_MOVE_RIGHT:
-						return api.CanMoveRight(args.get(0));
+						handleObstacleCase(Action.MOVE_RIGHT);
+						break;
 					case CAN_ROTATE_RIGHT:
-						return api.CanRotateRight(args.get(0));
+						handleObstacleCase(Action.ROTATE_RIGHT);
+						break;
 					case CAN_ROTATE_LEFT:
-						return api.CanRotateLeft(args.get(0));
-						/*
-						 * - We define the Action we want to preform
-						 * - Check if the preconditions are satisfied, 
-						 * 	 - if true, we apply the action
-						 * 	 - else we add them to the goal stack
-						 */
-					case ROTATED: 
-						RecInfo source = currentGoal.getArgs.get(0);
-						Action newAction = new Action(api,
-													  Action.ROTATE_RIGHT,
-													  source);
-						if(newAction.CheckPreconditions()){
-							newAction.Apply();
-							plan.add(newAction);
-						}else{
-							for (Condition precondition : 
-								 newAction.getPreconditions()){
-					        	goalStack.add(precondition);
-					      	}											
-						}
+						handleObstacleCase(Action.ROTATE_LEFT);
+						break;
 					case IN_SPACE: 
-						return api.InSpace(args.get(0),args.get(1));
+						moveBetweenRooms();
+						break;
+
+					/* Here we start to deal with Actions
+					 * see handleActionCase() below
+					 */
+					case ROTATED: 
+						handleActionCase(Action.ROTATE_LEFT);
+						break;
 					case IS_LOWER: 
-						return api.IsLower(args.get(0),args.get(1));
+						handleActionCase(Action.MOVE_UP);
+						break;
 					case IS_HIGHER: 
-						return api.IsHigher(args.get(0),args.get(1));
+						handleActionCase(Action.MOVE_DOWN);
+						break;
 					case IS_TO_THE_LEFT: 
-						return api.IsToTheLeft(args.get(0),args.get(1));
+						handleActionCase(Action.MOVE_LEFT);
+						break;
 					case IS_TO_THE_RIGHT: 
-						return api.IsToTheRight(args.get(0),args.get(1));
+						handleActionCase(Action.MOVE_RIGHT);
+						break;
 					default:
-						debugPrint(DEBUG_FUNCTION,"BUG invalid Condition");
-						return false;
+						break;
 				}   //switch
 			}	//else
 		}
@@ -140,8 +153,97 @@ public class StripsEngine {
 
 /* ---------------------------- Private Methods ---------------------------- */
 
-	private void prepareGoalStack(){
 
+	/**
+	 * Method prepares the initial GoalStack and ProblemStack, using the info
+	 * in the ProblemsList
+	 */
+	private void prepareGoalStack(){
+		for (Problem Problem : problems){
+			ArrayList<RecInfo> args = new ArrayList<RecInfo>();
+			args.add(problem.getSource);
+			args.add(problem.getTarged);
+        	Condition newGoal = new Condition(api,
+        									  Condition.IN_PLACE,
+        									  args,true);
+        	goalStack.push(newGoal);
+        	problemStack.push(newGoal);
+      	}		
+	}
+
+	private void moveBetweenRooms(){
+
+	}
+
+
+	/** Helper method for Solve()
+	 * - We define the Action we want to preform
+	 * - Check if the preconditions are satisfied, 
+	 * 	 - if true, we apply the action
+	 * 	 - else we add them to the goal stack
+	 */
+	private void handleActionCase(String action){
+		currentGoal = goalStack.peek();
+		RecInfo source = currentGoal.getArgs.get(0);
+		Action newAction = new Action(api,
+									  action,
+									  source);
+		if(newAction.CheckPreconditions()){
+			newAction.Apply();
+			plan.add(newAction);
+		}else{
+			for (Condition precondition : newAction.getPreconditions()){
+	        	goalStack.add(precondition);
+	      	}											
+		}		
+	}
+
+	/**
+	 * Method to handle an Obstacle case
+	 * If we reached thease cases, means that we want to
+	 * apply an action, but we have an Obstacle. In the 
+	 * current engine, we choose to move the Obstacle aside
+	 * to let us apply the action and after we apply it, we 
+	 * return the obstacle to it's original place
+	 * so we add the following to the GoalStack:
+	 * ST-2. IN_PLACE(tmpPlace,obstacle) = true : Return the 
+	 *	obstacle to it's original place
+	 * ST-1. IN_PLACE(source, targed) = true :
+	 *	move source to targed
+	 * ST. IN_PLACE(obstacle,tmpPlace) = true : Move the 
+	 *	obstacle to temprary place
+	 *
+	 */
+	private void handleObstacleCase(String action){
+		currentProblem = problemStack.peek();
+		RecInfo source = currentProblem.getArgs().get(0);
+		RecInfo targed = currentProblem.getArgs().get(1);
+		RecInfo obstacle = api.getObstacle(source,
+										action);
+		RecInfo tmpPlace = api.findTempObstaclePlace(source,
+										obstacle,
+										action);
+		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
+		args.add(tmpPlace);
+		args.add(obstacle);
+		Condition newGoal = new Condition(api,
+										  Condition.IN_PLACE,
+										  args,true);
+		goalStack.push(newGoal);
+		args = new ArrayList<RecInfo>();
+		args.add(source);
+		args.add(targed);
+		Condition newGoal = new Condition(api,
+										  Condition.IN_PLACE,
+										  args,true);
+		goalStack.push(newGoal);
+		args = new ArrayList<RecInfo>();
+		args.add(obstacle);
+		args.add(tmpPlace);
+		Condition newGoal = new Condition(api,
+										  Condition.IN_PLACE,
+										  args,true);
+		goalStack.push(newGoal);
 	}
 
  } // End of Class StripsEngine ----------------------------------------------- //
