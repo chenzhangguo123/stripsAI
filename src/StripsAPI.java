@@ -106,7 +106,21 @@ public class StripsAPI {
 			default: 
 				return;		
 		}
+	}
 
+	/**
+	 * Method returns aמ appropriate spot near the doorway between the 
+	 * the currentRoom and the targedRoom, INSIDE THE CURRENT ROOM!
+	 * e.g : if we have 
+	 * 			furniture(0,2,0,1)
+	 *			currentRoom(0,7,0,4)
+	 * 			targedRoom(8,19,5,11)
+	 * 		Then the appropriate spot near the doorway will be: 
+	 * 			doorWay(5,7,1,2)
+	 */ 
+	public RecInfo findSpotNearDorway(RecInfo furniture, RecInfo currentRoom
+												RecInfo targedRoom){
+		// TODO
 	}
 	
 	/************************************************************************ 

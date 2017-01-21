@@ -171,10 +171,48 @@ public class StripsEngine {
       	}		
 	}
 
+	/**
+	 * Method adds Goals for moving the source furniture to the specified room
+	 * - currentDoorway: we find a spot near the doorway in current room
+	 * - targedDoorway: we find a spot near the doorway in the target room
+	 * - we add the following to the GoalStack:
+	 * ST-4 : IS_TO_THE_LEFT(source,targedDoorway) = false
+	 * ST-3 : IS_TO_THE_RIGHT(source,targedDoorway) = false
+	 * ST-2	: IS_LOWER(source,targedDoorway) = false
+	 * ST-1	: IS_HIGHER(source,targedDoorway) = false
+	 * ST : IN_PLACE(source,currentDoorway)
+	 */
 	private void moveBetweenRooms(){
+		
+		Condition currentGoal = goalStack.peek();
+		RecInfo source = currentGoal.getArgs().get(0);
+		RecInfo currentRoom = api.getRoom(source);
+		RecInfo targedRoom = currentGoal.getArgs().get(1);
+		RecInfo currentDoorway = api.findSpotNearDorway(source,
+														currentRoom,
+														targedRoom);
+		RecInfo targedDoorway = api.findSpotNearDorway(source,
+														targedRoom,
+														currentRoom);
+		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
+		args.add(source);
+		args.add(targedDoorway);
+		Condition newGoal = new Condition(api,
+										Condition.IS_TO_THE_LEFT,args,false);
+		goalStack.push(newGoal);
+		newGoal = new Condition(api,Condition.IS_TO_THE_RIGHT,args,false);
+		goalStack.push(newGoal);
+		newGoal = new Condition(api,Condition.IS_LOWER,args,false);
+		goalStack.push(newGoal);	
+		newGoal = new Condition(api,Condition.IS_HIGHER,args,false);
+		goalStack.push(newGoal);
 
+		args = new ArrayList<RecInfo>();
+		args.add(source);
+		args.add(currentDoorway);
+		newGoal = new Condition(api,Condition.IN_PLACE,args,true);
+		goalStack.push(newGoal);
 	}
-
 
 	/** Helper method for Solve()
 	 * - We define the Action we want to preform
