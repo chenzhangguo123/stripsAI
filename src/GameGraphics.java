@@ -67,12 +67,33 @@ public class GameGraphics implements Initializable{
 		System.out.println("started");
 	}
     
-	public ArrayList<Problem> getProblems(){
+    public ArrayList<Problem> getProblems(){
 		ArrayList<Problem> problems = new ArrayList<Problem>();
 		
-		//TODO (X,u,Y)
+		MyRec rectangle = null;
+		RecInfo info = null;
+		for(int i =0; i < furL.size(); i++){
+			rectangle = furL.get(i);
+			info = findRectangleMatch(rectangle);
+			if (info == null){
+				System.out.println("Destination rectangle is missing");
+			} else{
+				problems.add(new Problem(rectangle.getRecInfo(), info));
+			}
+		}
 
 		return problems;
+	}
+
+    private RecInfo findRectangleMatch(MyRec rectangle) {
+    	MyRec destRectangle = null;
+		for(int index = 0; index < furR.size(); index++){
+			destRectangle = furR.get(index);
+			if (rectangle.checkEdges(destRectangle)){
+				return new RecInfo(destRectangle.getX1(), destRectangle.getX2(), destRectangle.getY1(), destRectangle.getY2());
+			}
+		}
+		return null;
 	}
 
     public boolean IsFree(RecInfo space){
