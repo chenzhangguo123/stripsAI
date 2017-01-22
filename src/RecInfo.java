@@ -16,8 +16,12 @@ public class RecInfo {
 		edge2=this.y2-this.y1;
 	}
 	
-	public double getEdge1() {
+	public int getEdge1() {
 		return edge1;
+	}
+	
+	public int getEdge2() {
+		return edge2;
 	}
 	
 	public boolean checkEdges(int edge1,int edge2) {

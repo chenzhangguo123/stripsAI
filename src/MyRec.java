@@ -109,4 +109,8 @@ public class MyRec extends Rectangle{
 	public String toString(){
 		return super.toString()+" "+x1+" "+x2+" "+y1+" "+y2;		
 	}
+	
+	public RecInfo getRecInfo(){
+		return new RecInfo(this.x1, this.x2, this.y1, this.y2);
+	}
 }

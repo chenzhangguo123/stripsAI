@@ -273,6 +273,33 @@ public class GameGraphics implements Initializable{
     		
         });
     }
+    
+    public RecInfo getRectangleByYAxis(int x, int y1, int y2){
+    	RecInfo info = null;
+    	MyRec rectangle = null;
+    	for(int i = y1; i <= y2; i++){
+    		rectangle = getRectangleByPoint(x, i, furL);
+    		if (rectangle != null){
+    			info = rectangle.getRecInfo();
+    			break;
+    		}
+    	}
+    	return info;
+    }
+    
+    public RecInfo getRectangleByXAxis(int x1, int x2, int y){
+    	RecInfo info = null;
+    	MyRec rectangle = null;
+    	for(int i = x1; i <= x2; i++){
+    		rectangle = getRectangleByPoint(i, y, furL);
+    		if (rectangle != null){
+    			info = rectangle.getRecInfo();
+    			break;
+    		}
+    	}
+    	return info;
+    }
+    
 	private boolean legalPlace(int x1, int x2, int y1, int y2, boolean isBoard1) {
 		List<MyRec> tFur=null;
 		if(isBoard1)
@@ -421,10 +448,6 @@ public class GameGraphics implements Initializable{
 		for(MyRec rec:tFur){
 			double x=getRecX(rec,isBoard1);
 			double y=getRecY(rec,isBoard1);
-			System.out.println(cX);
-			System.out.println(cY);
-			System.out.println(x);
-			System.out.println(y);
 			if(cX>=x&&cX<=(x+rec.getWidth())&&cY>=y&&cY<=(y+rec.getHeight()))
 				return rec;
 		}
@@ -443,6 +466,7 @@ public class GameGraphics implements Initializable{
 		}
 		return null;
 	}
+	
 
 	private double getRecY(Rectangle rec, boolean isBoard1) {
 		double y=rec.getLayoutY()+rec.getTranslateY();
