@@ -115,6 +115,21 @@ public class StripsAPI {
 	public RecInfo findTempObstaclePlace(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
+		RecInfo currentRoom = getRoom(rect);
+		int distanceToWall;
+		
+		int theMostRightPick;
+		int theMostLeftPick;
+		int theLowestPick;
+		int theHighestPick;
+		
+		int distanceToMoveLeft;
+		int distanceToMoveDown;
+		
+		RecInfo tempRec = null;
+		
+		boolean found = false;
+		int counter;
 			switch(actionName){
 			case MOVE_LEFT:		
 				// TODO
@@ -128,15 +143,109 @@ public class StripsAPI {
 			case MOVE_DOWN:
 				// TODO
 				return;		
-			case ROTATE_LEFT:
-				// TODO
-				return;		
+			case ROTATE_LEFT://TODO calculate the exact upper limit
+				distanceToWall = currentRoom.getY2() - rect.getY2();
+				theLowestPick = obstacle.getY2();
+				if (distanceToWall >= obstacle.getEdge2()){
+					for(int i = obstacle.getY2()+1; i < rect.getY2()+obstacle.getEdge2(); i++){
+						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+							theLowestPick = i -1;
+							found = true;
+							break;
+						}
+					}
+					if (!found){
+						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+								rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
+					}
+					found = false;	
+				}
+				distanceToWall = rect.getY1() - currentRoom.getY1();
+				theHighestPick = obstacle.getY1();
+				if (distanceToWall >= obstacle.getEdge2()){
+					for(int i = obstacle.getY1()-1; i > rect.getY1()-obstacle.getEdge2(); i--){
+						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+							theHighestPick = i + 1;
+							found = true;
+							break;
+						}
+					}
+					if (!found){
+						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+								rect.getY1() - 1, rect.getY1()-obstacle.getEdge2()-1);
+					}
+					found = false;	
+				}
+				distanceToMoveLeft = obstacle.getX1() - (rect.getX1()-1-rect.getEdge2());
+				counter = 0;
+				for(int i = theHighestPick; i <= theLowestPick - obstacle.getEdge2(); i--){
+					if (game.getRectangleByXAxis(obstacle.getX1()-distanceToMoveLeft, 
+							obstacle.getX2()-distanceToMoveLeft, i) != null){
+						counter = 0;
+					}
+					else{
+						counter++;
+						if (counter == obstacle.getEdge2()){
+							return new RecInfo(obstacle.getX1()-distanceToMoveLeft, 
+									obstacle.getX2()-distanceToMoveLeft, 
+									i, i+obstacle.getEdge2());
+						}
+					}
+				}
+				return null;
 			case ROTATE_RIGHT:
-				// TODO
-				return;
+				distanceToWall = currentRoom.getX2() - (rect.getX1()+rect.getEdge2());
+				theMostRightPick = obstacle.getY2();
+				if (distanceToWall >= obstacle.getEdge1()){
+					for(int i = obstacle.getX2()+1; i < rect.getY1()+rect.getEdge2()+obstacle.getEdge2(); i++){
+						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+							theMostRightPick = i -1;
+							found = true;
+							break;
+						}
+					}
+					if (!found){
+						return new RecInfo(rect.getX1()+rect.getEdge2()+1, 
+								rect.getX1()+rect.getEdge2()+obstacle.getEdge1(), 
+								rect.getY1(), rect.getY2());
+					}
+					found = false;	
+				}
+				distanceToWall = rect.getX1() - currentRoom.getX1();
+				theMostLeftPick = obstacle.getY1();
+				if (distanceToWall >= obstacle.getEdge1()){
+					for(int i = obstacle.getX1()-1; i > rect.getX1()-obstacle.getEdge1(); i--){
+						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+							theMostLeftPick = i + 1;
+							found = true;
+							break;
+						}
+					}
+					if (!found){
+						return new RecInfo(rect.getX1()-obstacle.getEdge1()-1, 
+								rect.getX1()-1, rect.getY1(), rect.getY2());
+					}
+					found = false;	
+				}
+				distanceToMoveDown = rect.getX2() - (obstacle.getX1()-1);
+				counter = 0;
+				for(int i = theMostRightPick; i <= theLowestPick - obstacle.getEdge1(); i--){
+					if (game.getRectangleByYAxis(i, obstacle.getY1()+distanceToMoveDown, 
+							obstacle.getY2()+distanceToMoveDown) != null){
+						counter = 0;
+					}
+					else{
+						counter++;
+						if (counter == obstacle.getEdge2()){
+							return new RecInfo(i-obstacle.getEdge2(), i, obstacle.getY1()+distanceToMoveDown,
+									obstacle.getY2()+distanceToMoveDown);
+						}
+					}
+				}
+				return null;
 			default: 
 				return;		
-		}
+		} //Rotations done only for the case obstacle is on the rotate destination area
 	}
 
 	/**
