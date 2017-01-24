@@ -58,4 +58,14 @@ public class RecInfo {
 	public int getY2(){
 		return y2;
 	}
+
+	public void update(RecInfo newInfo){
+		this.x1 = newInfo.x1;
+		this.x2 = newInfo.x2;
+		this.y1 = newInfo.y1;
+		this.y2 = newInfo.y2;
+		this.edge1 = newInfo.edge1;
+		this.edge2 = newInfo.edge2;
+	}
+
 }

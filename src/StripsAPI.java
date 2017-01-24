@@ -763,6 +763,7 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX1()+rect.getEdge2(), 
 										rect.getY2()+1, rect.getY2()+rect.getEdge1()+1);
 		game.Move(rect,  destinationInfo);
+		rec.update(destinationInfo);		
 	}
 	
 	/**
@@ -772,6 +773,7 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1-rect.getEdge2(), rect.getX1()-1, 
 				rect.getY2()-1, rect.getY2()+rect.getEdge1()-1);
 		game.Move(rect,  destinationInfo);
+		rec.update(destinationInfo);		
 	}
 
 	/**
@@ -781,6 +783,7 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1()+1, rect.getX2()+1, 
 							rect.getY1(), rect.getY2());
 		game.Move(rect,  destinationInfo);
+		rec.update(destinationInfo);		
 	}
 	
 	/**
@@ -789,6 +792,7 @@ public class StripsAPI {
 	public void MoveLeft(RecInfo rec){
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1, rect.getX2()-1, 
 				rect.getY1(), rect.getY2());
+		rec.update(destinationInfo);		
 		game.Move(rect,  destinationInfo);
 	}
 
@@ -798,6 +802,7 @@ public class StripsAPI {
 	public void MoveUp(RecInfo rec){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()+1, rect.getY2()+1);
+		rec.update(destinationInfo);		
 		game.Move(rect,  destinationInfo);
 	}
 
@@ -807,6 +812,7 @@ public class StripsAPI {
 	public void MoveDown(RecInfo rec){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()-1, rect.getY2()-1);
+		rec.update(destinationInfo);
 		game.Move(rect,  destinationInfo);
 	}
 
