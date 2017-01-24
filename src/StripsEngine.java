@@ -263,26 +263,26 @@ public class StripsEngine {
 	 * to let us apply the action and after we apply it, we 
 	 * return the obstacle to it's original place
 	 * so we add the following to the GoalStack:
-	 * ST-2. IN_PLACE(tmpPlace,obstacle) = true : Return the 
+	 * ST-2. IN_PLACE(tmpPlace,oldObstaclePlace) = true : Return the 
 	 *	obstacle to it's original place
 	 * ST-1. IN_PLACE(source, targed) = true :
 	 *	move source to targed
 	 * ST. IN_PLACE(obstacle,tmpPlace) = true : Move the 
 	 *	obstacle to temprary place
-	 *
-	 */
+	 */	
 	private void handleObstacleCase(String action){
 		Condition currentProblem = problemStack.peek();
 		RecInfo source = currentProblem.getArgs().get(0);
 		RecInfo targed = currentProblem.getArgs().get(1);
 		RecInfo obstacle = api.getObstacle(source,
 										action);
+		RecInfo oldObstaclePlace = obstacle.copy();
 		RecInfo tmpPlace = api.findTempObstaclePlace(source,
 										obstacle,
 										action);
 		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
 		args.add(tmpPlace);
-		args.add(obstacle);
+		args.add(oldObstaclePlace);
 		Condition newGoal = new Condition(api,
 										  Condition.IN_PLACE,
 										  args,true);

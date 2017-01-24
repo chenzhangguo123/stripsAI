@@ -386,10 +386,10 @@ public class StripsAPI {
 	 */ 
 	
 	private RecInfo findSpotNearVerticalDoorway(RecInfo door, int edge, int x1, int x2){
-		int counter = 0;
+		int counter = -1;
 		for (int i = door.getY1(); i <= door.getY2(); i++){
 			if (game.getRectangleByXAxis(x1, x2, i) != null){
-				counter = 0;
+				counter = -1;
 			}
 			else{
 				counter ++;
@@ -403,15 +403,15 @@ public class StripsAPI {
 	
 	
 	private RecInfo findSpotNearHorizontalDoorway(RecInfo door, int edge, int y1, int y2){
-		int counter = 0;
+		int counter = -1;
 		for (int i = door.getX1(); i <= door.getX2(); i++){
 			if (game.getRectangleByYAxis(i, y1, y2) != null){
-				counter = 0;
+				counter = -1;
 			}
 			else{
-				counter ++;
+				counter++;
 				if(counter == edge){
-					return new RecInfo(i, i+edge, y1,y2);
+					return new RecInfo(i-edge, i, y1,y2);
 				}
 			}
 		}
@@ -512,12 +512,13 @@ public class StripsAPI {
 		int x2 = rect.getX2();
 		int y1 = rect.getY1();
 		
-		if (y1 == 1) { //cannot move into wall; maybe it has to be 0
+		if (y1 == this.ROOM1.getY1()) { //cannot move into wall; maybe it has to be 0
 			return false;
 		}
 		
-		if (y1 == 5){
-			if(x1 >= 2 && x2 <= 5){ //Door
+		if (y1 == this.ROOM2.getY1()){
+			if(x1 >= this.DOORWAY_ROOMS12.getX1() 
+			&& x2 <= this.DOORWAY_ROOMS12.getX2()){ //Door
 				if (game.getRectangleByXAxis(x1, x2, y1-1) == null){
 					return true;
 				}
@@ -546,19 +547,21 @@ public class StripsAPI {
 		int x2 = rect.getX2();
 		int y2 = rect.getY2();
 		
-		if (y2 == 10) { //cannot move into wall; maybe it has to be 0
+		if (y2 == this.ROOM2.getY2()) { //cannot move into wall; 
 			return false;
 		}
 		
-		if (y2 == 3){
-			if(x1 >= 2 && x2 <= 5){ //Door
+		if (y2 == this.ROOM1.getY2()){
+			if(x1 >= this.DOORWAY_ROOMS12.getX1() && x2 <= this.DOORWAY_ROOMS12.getX2()){ //Door
 				if (game.getRectangleByXAxis(x1, x2, y2+1) == null){
 					return true;
 				}
 				
 				return false;
 			}
-			else if (x1 <2 || (x2 > 5 && x2 <= 7)){//cannot move into wall
+			else if (x1 <this.DOORWAY_ROOMS12.getX1() 
+					|| (x2 > this.DOORWAY_ROOMS12.getX2() 
+					&& x2 <= this.ROOM2.getX2())){//cannot move into wall
 				return false;
 			}
 		}
@@ -579,7 +582,7 @@ public class StripsAPI {
 		int y1 = rect.getY1();
 		int y2 = rect.getY2();
 		
-		if (x1 == this.ROOM1.getX1()) { //cannot move into wall; maybe it has to be 0
+		if (x1 == this.ROOM1.getX1()) { //cannot move into wall; 
 			return false;
 		}
 		
@@ -655,38 +658,38 @@ public class StripsAPI {
 		int x2 = rect.getX2();
 		int y1 = rect.getY1();
 		int y2 = rect.getY2();
-		if (x1 >= ROOM1.getX1()){ // under upper wall
+		if (x1 < ROOM1.getX1()){ // under upper wall
 			return false;
 		}
 		if (y1 < ROOM1.getY1()){ //under bottom wall
 			return false;
 		}
-		if (x2 >= ROOM3.getX2()){ // under upper wall
+		if (x2 > ROOM3.getX2()){ // under upper wall
 			return false;
 		}
 		
-		if (y2 >= ROOM2.getY2()){ //under bottom wall
+		if (y2 > ROOM2.getY2()){ //under bottom wall
 			return false;
 		}
-		if (y1 <= DOORWAY_ROOMS13.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between door and upper wall
+		if (y1 < DOORWAY_ROOMS13.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between door and upper wall
 			return false;
 		}
-		if (y1 >= DOORWAY_ROOMS13.getY1() && y1 <= DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
+		if (y1 > DOORWAY_ROOMS13.getY2() && y1 < DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
 			return false;
 		}
-		if (y2 >= DOORWAY_ROOMS13.getY1() && y2 <= DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
+		if (y2 > DOORWAY_ROOMS13.getY1() && y2 < DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
 			return false;
 		}
-		if (y2 >= DOORWAY_ROOMS23.getY2() && x1 <= DOORWAY_ROOMS23.getX1() && x2 >= DOORWAY_ROOMS23.getX2()){ //between door and bottom wall
+		if (y2 > DOORWAY_ROOMS23.getY2() && x1 <= DOORWAY_ROOMS23.getX1() && x2 >= DOORWAY_ROOMS23.getX2()){ //between door and bottom wall
 			return false;
 		}
-		if (x1 < DOORWAY_ROOMS12.getX1() && y1 < DOORWAY_ROOMS12.getY1() && y2 > DOORWAY_ROOMS12.getY2()){
+		if (x1 < DOORWAY_ROOMS12.getX1() && y1 <= DOORWAY_ROOMS12.getY1() && y2 >= DOORWAY_ROOMS12.getY2()){
 			return false;
 		}
-		if (x1 > DOORWAY_ROOMS12.getX2() && x1 < DOORWAY_ROOMS23.getX1() && y1 < DOORWAY_ROOMS12.getY1() && y2 > DOORWAY_ROOMS12.getY2()){
+		if (x1 > DOORWAY_ROOMS12.getX2() && x1 < DOORWAY_ROOMS23.getX1() && y1 <= DOORWAY_ROOMS12.getY1() && y2 >= DOORWAY_ROOMS12.getY2()){
 			return false;
 		}
-		if (x2 > DOORWAY_ROOMS12.getX2() && x2 < DOORWAY_ROOMS23.getX1() && y1 < DOORWAY_ROOMS12.getY1() && y2 > DOORWAY_ROOMS12.getY2()){
+		if (x2 > DOORWAY_ROOMS12.getX2() && x2 <= DOORWAY_ROOMS23.getX1() && y1 <= DOORWAY_ROOMS12.getY1() && y2 >= DOORWAY_ROOMS12.getY2()){
 			return false;
 		}
 		return true;
@@ -729,7 +732,7 @@ public class StripsAPI {
 		int edge1 = rect.getEdge1();
 		int edge2 = rect.getEdge2();
 		
-		int newX1 = x1 - edge2-1;
+		int newX1 = x1 - edge2;
 		int newX2 = x1-1;
 		int newY1 = y2-edge1;
 		int newY2 = y2;
