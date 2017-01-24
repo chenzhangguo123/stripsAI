@@ -21,7 +21,7 @@ public class Condition {
 	public static final String CAN_MOVE_LEFT = "CAN_MOVE_LEFT";
 	public static final String CAN_MOVE_RIGHT = "CAN_MOVE_RIGHT";
 	public static final String CAN_ROTATE_RIGHT = "CAN_ROTATE_RIGHT";
-	public static final String CAN_ROTATE_LEFT = "CAN_ROTATE_RIGHT";
+	public static final String CAN_ROTATE_LEFT = "CAN_ROTATE_LEFT";
 	public static final String ROTATED = "ROTATED";
 	public static final String IN_SPACE = "IN_SPACE";
 	public static final String IS_LOWER = "IS_LOWER";
@@ -51,7 +51,7 @@ public class Condition {
 /* ----------------------------- Public Methods ---------------------------- */
 
 	public boolean Check(){
-		switch(naem){
+		switch(name){
 			case IN_PLACE:
 				return api.InPlace(args.get(0),args.get(1));
 			case CAN_MOVE_UP:
@@ -120,7 +120,7 @@ public class Condition {
     	String s = "";
     	s += name;
     	s += "( ";
-    	for(int i=0,i<args.size(),i++){
+    	for(int i=0;i<args.size();i++){
     		s += args.get(i).toString();
     		if(i+1 != args.size()){
     			s+= ",";

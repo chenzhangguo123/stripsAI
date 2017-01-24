@@ -68,4 +68,9 @@ public class RecInfo {
 		this.edge2 = newInfo.edge2;
 	}
 
+	@Override
+	public String toString(){
+		return "(" + x1 + "," + x2 + "," + y1 + "," + y2 + ")";
+	}
+	
 }

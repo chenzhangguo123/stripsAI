@@ -66,6 +66,8 @@ public class GameGraphics implements Initializable{
     @FXML
     private void startSim() {
 		System.out.println("started");
+		StripsEngine engine = new StripsEngine(this);
+		engine.Solve();
 	}
     
     public ArrayList<Problem> getProblems(){
@@ -111,6 +113,7 @@ public class GameGraphics implements Initializable{
     }
     
     public void Move(RecInfo source, RecInfo dest){
+    	System.out.println("Source="+source+" Dest="+dest);
     	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
     	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
     	makeMove(rectangle);

@@ -19,6 +19,13 @@ public class StripsEngine {
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
+	private static final String DEBUG_TAG = "StripsEngine";
+	private static final int DEBUG_ALL = 0;
+	private static final int DEBUG_CLASS = 1;
+	private static final int DEBUG_FUNCTION = 2;
+	private static final int DEBUG_SPECIFIC = 3;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
+
 /* ---------------------------- Object Construction ------------------------ */
 
 	public StripsEngine(GameGraphics game){
@@ -33,6 +40,7 @@ public class StripsEngine {
 /* ----------------------------- Public Methods ---------------------------- */
 
 	public void Solve(){
+		debugPrint(DEBUG_FUNCTION,"reached Solve");
 		prepareGoalStack();
 
 		/* We will continue to solve problems until our goalStack is empty */
@@ -41,17 +49,21 @@ public class StripsEngine {
 			// Lets look at our top Goal, if it is satisfied, just pop it out
 			Condition currentGoal = goalStack.peek();
 			Condition currentProblem = problemStack.peek();
+			debugPrint(DEBUG_FUNCTION,"currentGoal is "+currentGoal.toString());
 			if(currentGoal.isSatisfied()){
+				debugPrint(DEBUG_FUNCTION,"The Goal:"+currentGoal.toString() + 
+						"poped out of the GoalStack");
 				if(currentGoal == currentProblem){
 					problemStack.pop();
 				}
 				goalStack.pop();
 			}else{
-				switch(currentGoal.getName){
+				switch(currentGoal.getName()){
 					/* If the new Goal is IN_PLACE type and it is not satisfied,
 					 * Then we will add SubGoals to our GoalStack
 					 */
 					case Condition.IN_PLACE:
+						debugPrint(DEBUG_FUNCTION,"Entered IN_PLACE");
 						/* If we face a new problem that we never seen before
 						 * add it to the problemStack
 						 */
@@ -59,21 +71,17 @@ public class StripsEngine {
 							problemStack.push(currentGoal);
 						}
 						/* Adding 6 new Conditions to the GoalStack
-							1.  ROTATED(rect1,targed1) = false - Both must not 
-							    be rotated one related to another
-							2.	IS_TO_THE_LEFT(rect1,targed1) = false
-							3.	IS_TO_THE_RIGHT(rect1,targed1) = false
-							4.	IS_LOWER(rect1,targed1) = false
-							5.	IS_HIGHER(rect1,targed1) = false
-							6.  IN_SPACE(source,ROOM(targsed)) = true - They must
+							ST-5.	IS_TO_THE_LEFT(rect1,targed1) = false
+							ST-4.	IS_TO_THE_RIGHT(rect1,targed1) = false
+							ST-3.	IS_LOWER(rect1,targed1) = false
+							ST-2.	IS_HIGHER(rect1,targed1) = false
+							ST-1.  ROTATED(rect1,targed1) = false - Both must not 
+							    be rotated one related to another							
+							ST.  IN_SPACE(source,ROOM(targsed)) = true - They must
 								in the same room
 						 */
 						ArrayList<RecInfo> furniture = currentGoal.getArgs();
 						Condition newGoal = new Condition(api,
-														  Condition.ROTATED,
-														  furniture,false);
-						goalStack.push(newGoal);
-						newGoal = new Condition(api,
 												Condition.IS_TO_THE_LEFT,
 														  furniture,false);
 						goalStack.push(newGoal);
@@ -89,6 +97,10 @@ public class StripsEngine {
 												Condition.IS_HIGHER,
 														  furniture,false);
 						goalStack.push(newGoal);
+						newGoal = new Condition(api,
+														  Condition.ROTATED,
+														  furniture,false);
+						goalStack.push(newGoal);						
 						RecInfo targed = furniture.get(1);
 						RecInfo desiredRoom = api.getRoom(targed);
 						ArrayList<RecInfo> args = new ArrayList<RecInfo>();
@@ -163,8 +175,8 @@ public class StripsEngine {
 	private void prepareGoalStack(){
 		for (Problem Problem : problems){
 			ArrayList<RecInfo> args = new ArrayList<RecInfo>();
-			args.add(problem.getSource);
-			args.add(problem.getTarged);
+			args.add(Problem.getSource());
+			args.add(Problem.getTarged());
         	Condition newGoal = new Condition(api,
         									  Condition.IN_PLACE,
         									  args,true);
@@ -223,8 +235,8 @@ public class StripsEngine {
 	 * 	 - else we add them to the goal stack
 	 */
 	private void handleActionCase(String action){
-		currentGoal = goalStack.peek();
-		RecInfo source = currentGoal.getArgs.get(0);
+		Condition currentGoal = goalStack.peek();
+		RecInfo source = currentGoal.getArgs().get(0);
 		Action newAction = new Action(api,
 									  action,
 									  source);
@@ -286,4 +298,11 @@ public class StripsEngine {
 		goalStack.push(newGoal);
 	}
 
- } // End of Class StripsEngine ----------------------------------------------- //
+	private static void debugPrint(int debugLevel, String debugText){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || debugLevel == DEBUG_ALL){
+			System.out.println("Debug print: "+DEBUG_TAG);
+			System.out.println(debugText);
+		}
+	}
+
+ } // End of Class StripsEngine -------------------------------------------- //

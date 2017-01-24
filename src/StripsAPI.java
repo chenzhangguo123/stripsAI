@@ -8,12 +8,12 @@ public class StripsAPI {
 /* ---------------------------- Constant Values ---------------------------- */
 
 	// Rooms definition:  in the format RecInfo(x1,x2,y1,y2)
-	public static final RecInfo ROOM1 = new RecInfo(0,7,0,4);
-	public static final RecInfo ROOM2 = new RecInfo(0,7,5,11);
-	public static final RecInfo ROOM3 = new RecInfo(8,19,0,11);
-	public static final RecInfo DOORWAY_ROOMS12 = new RecInfo(2,5,4,5);
-	public static final RecInfo DOORWAY_ROOMS13 = new RecInfo(7,8,1,3);
-	public static final RecInfo DOORWAY_ROOMS23 = new RecInfo(7,8,6,10);
+	public final RecInfo ROOM1 = new RecInfo(0,7,0,4);
+	public final RecInfo ROOM2 = new RecInfo(0,7,5,11);
+	public final RecInfo ROOM3 = new RecInfo(8,19,0,11);
+	public final RecInfo DOORWAY_ROOMS12 = new RecInfo(2,5,4,5);
+	public final RecInfo DOORWAY_ROOMS13 = new RecInfo(7,8,1,3);
+	public final RecInfo DOORWAY_ROOMS23 = new RecInfo(7,8,6,10);
 	
 	
 /* ---------------------------- DEBUG Environment -------------------------- */
@@ -58,58 +58,35 @@ public class StripsAPI {
 	 * @param actionName - the name of the action we want to preform
 	 * @return - Obstacle info
 	 */
-	public ArrayList<RecInfo> getObstacle(RecInfo rect,String actionName){
-		ArrayList<RecInfo> obstacles = new ArrayList<RecInfo>();
+	public RecInfo getObstacle(RecInfo rect,String actionName){
 		RecInfo info = null;
 		switch(actionName){
-			case MOVE_LEFT:		
-				info = game.getRectangleByYAxis(rect.getX1()-1, rect.getY1(), rect.getY2());
-				while (info != null){
-					obstacles.add(info);
-					info = game.getRectangleByYAxis(rect.getX1()-1, info.getY2()+1, rect.getY2());
-				}
-				return obstacles;
-			case MOVE_RIGHT:
-				info = game.getRectangleByYAxis(rect.getX2()+1, rect.getY1(), rect.getY2());
-				while (info != null){
-					obstacles.add(info);
-					info = game.getRectangleByYAxis(rect.getX1()+1, info.getY2()+1, rect.getY2());
-				}
-				return obstacles;
-			case MOVE_UP:
-				info = game.getRectangleByXAxis(rect.getX1(), rect.getX2(), rect.getY1()-1);
-				while (info != null){
-					obstacles.add(info);
-					info = game.getRectangleByXAxis(info.getX2(), rect.getX2(), rect.getY1()-1);
-				}
-				return obstacles;
-			case MOVE_DOWN:
-				info = game.getRectangleByXAxis(rect.getX1(), rect.getX2(), rect.getY2()+1);
-				while (info != null){
-					obstacles.add(info);
-					info = game.getRectangleByXAxis(info.getX2(), rect.getX2(), rect.getY2()+1);
-				}
-				return obstacles;
-			case ROTATE_LEFT:
+			case Action.MOVE_LEFT:		
+				return game.getRectangleByYAxis(rect.getX1()-1, rect.getY1(), rect.getY2());
+			case Action.MOVE_RIGHT:
+				return game.getRectangleByYAxis(rect.getX2()+1, rect.getY1(), rect.getY2());
+			case Action.MOVE_UP:
+				return game.getRectangleByXAxis(rect.getX1(), rect.getX2(), rect.getY1()-1);
+			case Action.MOVE_DOWN:
+				return game.getRectangleByXAxis(rect.getX1(), rect.getX2(), rect.getY2()+1);
+			case Action.ROTATE_LEFT:
 				for(int i = rect.getX1()-1-rect.getEdge2(); i <= rect.getX1()-1; i++){
 					info = game.getRectangleByYAxis(i, rect.getY2()-rect.getEdge1(), rect.getY2());
-					while (info != null){
-						obstacles.add(info);
-						info = game.getRectangleByYAxis(i, info.getY2()+1, rect.getY2());
+					if(info != null){
+						return info;
 					}
 				}
-				return obstacles;	
-			case ROTATE_RIGHT:
+				return null;
+			case Action.ROTATE_RIGHT:
 				for(int i = rect.getX1(); i <= rect.getX1()+rect.getEdge2(); i++){
 					info = game.getRectangleByYAxis(i, rect.getY2()-1, rect.getY2()+rect.getEdge1()-1);
-					while (info != null){
-						obstacles.add(info);
-						info = game.getRectangleByYAxis(i, info.getY2()+1, rect.getY2()+rect.getEdge1()-1);
+					if(info != null){
+						return info;
 					}
 				}
-				return obstacles;	
+				return null;	
 			default: 
-				return obstacles;		
+				return null;		
 		}
 	}
 
@@ -136,7 +113,7 @@ public class StripsAPI {
 		boolean found = false;
 		int counter;
 			switch(actionName){
-			case MOVE_LEFT:		
+			case Action.MOVE_LEFT:		
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
 				if (distanceToWall >= obstacle.getEdge2()){
@@ -175,7 +152,7 @@ public class StripsAPI {
 					tempRec = game.getRectangleByYAxis(obstacle.getX1()-1, theLowestPick, theHighestPick);
 				}
 				return new RecInfo(obstacle.getX1()-1, obstacle.getX2()-1, theLowestPick, theLowestPick+obstacle.getEdge2());
-			case MOVE_RIGHT:
+			case Action.MOVE_RIGHT:
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
 				if (distanceToWall >= obstacle.getEdge2()){
@@ -214,7 +191,7 @@ public class StripsAPI {
 					tempRec = game.getRectangleByYAxis(obstacle.getX2()+1, theLowestPick, theHighestPick);
 				}
 				return new RecInfo(obstacle.getX1()+1, obstacle.getX2()+1, theLowestPick, theLowestPick+obstacle.getEdge2());	
-			case MOVE_UP:
+			case Action.MOVE_UP:
 				distanceToWall = currentRoom.getX2() - rect.getX2();
 				theMostRightPick = obstacle.getX2();
 				if (distanceToWall >= obstacle.getEdge1()){
@@ -253,7 +230,7 @@ public class StripsAPI {
 					tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY1()-1);
 				}
 				return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(), obstacle.getY1()-1, obstacle.getY2()-1);		
-			case MOVE_DOWN:
+			case Action.MOVE_DOWN:
 				distanceToWall = currentRoom.getX2() - rect.getX2();
 				theMostRightPick = obstacle.getX2();
 				if (distanceToWall >= obstacle.getEdge1()){
@@ -292,7 +269,7 @@ public class StripsAPI {
 					tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY2()+1);
 				}
 				return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(), obstacle.getY1()+1, obstacle.getY2()+1);	
-			case ROTATE_LEFT://TODO calculate the exact upper limit
+			case Action.ROTATE_LEFT://TODO calculate the exact upper limit
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
 				if (distanceToWall >= obstacle.getEdge2()){
@@ -342,7 +319,7 @@ public class StripsAPI {
 					}
 				}
 				return null;
-			case ROTATE_RIGHT:
+			case Action.ROTATE_RIGHT:
 				distanceToWall = currentRoom.getX2() - (rect.getX1()+rect.getEdge2());
 				theMostRightPick = obstacle.getY2();
 				if (distanceToWall >= obstacle.getEdge1()){
@@ -378,7 +355,7 @@ public class StripsAPI {
 				}
 				distanceToMoveDown = rect.getX2() - (obstacle.getX1()-1);
 				counter = 0;
-				for(int i = theMostRightPick; i <= theLowestPick - obstacle.getEdge1(); i--){
+				for(int i = theMostRightPick; i <= theMostLeftPick - obstacle.getEdge1(); i--){
 					if (game.getRectangleByYAxis(i, obstacle.getY1()+distanceToMoveDown, 
 							obstacle.getY2()+distanceToMoveDown) != null){
 						counter = 0;
@@ -771,7 +748,7 @@ public class StripsAPI {
 	 * @return
 	 */
 	public boolean Rotated(RecInfo rect1, RecInfo rect2){
-		return rect1.getEdge1() == rect2.getEdge1() && rect1.getEdge2() == rect2.getEdge2();
+		return !(rect1.getEdge1() == rect2.getEdge1() && rect1.getEdge2() == rect2.getEdge2());
 	} // rect1 is rotated related to rect2
 	
 	/**
@@ -779,7 +756,7 @@ public class StripsAPI {
 	 * @return
 	 */
 	public boolean IsLower(RecInfo rect1, RecInfo rect2){
-		return rect1.getY1() < rect2.getY1();
+		return rect1.getY1() > rect2.getY1();
 	} // rect1 is lower then rect2
 	
 	/**
@@ -787,7 +764,7 @@ public class StripsAPI {
 	 * @return
 	 */
 	public boolean IsHigher(RecInfo rect1, RecInfo rect2){
-		return rect1.getY1() > rect2.getY1();
+		return rect1.getY1() < rect2.getY1();
 	} // rect1 is higher then rect2
 	
 	/**
@@ -816,7 +793,7 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX1()+rect.getEdge2(), 
 										rect.getY2()+1, rect.getY2()+rect.getEdge1()+1);
 		game.Move(rect,  destinationInfo);
-		rec.update(destinationInfo);		
+		rect.update(destinationInfo);		
 	}
 	
 	/**
@@ -826,7 +803,7 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1-rect.getEdge2(), rect.getX1()-1, 
 				rect.getY2()-1, rect.getY2()+rect.getEdge1()-1);
 		game.Move(rect,  destinationInfo);
-		rec.update(destinationInfo);		
+		rect.update(destinationInfo);		
 	}
 
 	/**
@@ -836,36 +813,36 @@ public class StripsAPI {
 		RecInfo destinationInfo = new RecInfo(rect.getX1()+1, rect.getX2()+1, 
 							rect.getY1(), rect.getY2());
 		game.Move(rect,  destinationInfo);
-		rec.update(destinationInfo);		
+		rect.update(destinationInfo);		
 	}
 	
 	/**
 	 * @param
 	 */	
-	public void MoveLeft(RecInfo rec){
+	public void MoveLeft(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1, rect.getX2()-1, 
 				rect.getY1(), rect.getY2());
-		rec.update(destinationInfo);		
+		rect.update(destinationInfo);		
 		game.Move(rect,  destinationInfo);
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveUp(RecInfo rec){
+	public void MoveUp(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()+1, rect.getY2()+1);
-		rec.update(destinationInfo);		
+		rect.update(destinationInfo);		
 		game.Move(rect,  destinationInfo);
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveDown(RecInfo rec){
+	public void MoveDown(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()-1, rect.getY2()-1);
-		rec.update(destinationInfo);
+		rect.update(destinationInfo);
 		game.Move(rect,  destinationInfo);
 	}
 

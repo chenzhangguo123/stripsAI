@@ -36,7 +36,7 @@ import java.util.ArrayList;
 		this.api = api;
 		this.name = name;
 		this.furniture = furniture;
-		this preconditions = new ArrayList<Condition>();
+		this.preconditions = new ArrayList<Condition>();
 		setPreconditions();
 	}
 
