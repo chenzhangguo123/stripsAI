@@ -43,8 +43,13 @@ public class StripsAPI {
 	 * under Rooms definition
 	 */
 	public RecInfo getRoom(RecInfo rect){
-		debugPrint(DEBUG_FUNCTION,"In function getRoom");
-		return ROOM1;
+		if(rect.getX2() <= this.ROOM1.getX2()){
+			if(rect.getY2() <= this.ROOM1.getY2()){
+				return this.ROOM1;
+			}
+			return this.ROOM2;
+		}
+		return this.ROOM3;
 	}
 
 	/**
@@ -388,7 +393,7 @@ public class StripsAPI {
 				}
 				return null;
 			default: 
-				return;		
+				return null;		
 		} //Rotations done only for the case obstacle is on the rotate destination area
 	}
 
@@ -403,45 +408,93 @@ public class StripsAPI {
 	 * 			doorWay(5,7,1,2)
 	 */ 
 	
+	private RecInfo findSpotNearVerticalDoorway(RecInfo door, int edge, int x1, int x2){
+		int counter = 0;
+		for (int i = door.getY1(); i <= door.getY2(); i++){
+			if (game.getRectangleByXAxis(x1, x2, i) != null){
+				counter = 0;
+			}
+			else{
+				counter ++;
+				if(counter == edge){
+					return new RecInfo(x1,x2, i-edge, i);
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	private RecInfo findSpotNearHorizontalDoorway(RecInfo door, int edge, int y1, int y2){
+		int counter = 0;
+		for (int i = door.getX1(); i <= door.getX2(); i++){
+			if (game.getRectangleByYAxis(i, y1, y2) != null){
+				counter = 0;
+			}
+			else{
+				counter ++;
+				if(counter == edge){
+					return new RecInfo(i, i+edge, y1,y2);
+				}
+			}
+		}
+		return null;
+	}
+	
 /*	public static final RecInfo DOORWAY_ROOMS12 = new RecInfo(2,5,4,5);
 	public static final RecInfo DOORWAY_ROOMS13 = new RecInfo(7,8,1,3);
 	public static final RecInfo DOORWAY_ROOMS23 = new RecInfo(7,8,6,10);*/
 	public RecInfo findSpotNearDorway(RecInfo furniture, RecInfo currentRoom,
 												RecInfo targetRoom){//TO ADD CHECK ALONG THE WALL
 		RecInfo door;
-		if(currentRoom == this.ROOM1 && targetRoom == this.ROOM2){
+		int x1, x2, y1, y2;
+		int counter;
+		if(currentRoom == this.ROOM1 && targetRoom == this.ROOM3){
 			door = this.DOORWAY_ROOMS13;
-			if(furniture.getEdge2() <= door.getY1()){
-				if (game.IsFree(new RecInfo(currentRoom.getX2()-furniture.getEdge1(),
-						currentRoom.getEdge2(), door.getY1()-1, 
-						door.getY1()-furniture.getEdge2()))){
-					return new RecInfo(currentRoom.getX2()-furniture.getEdge1(),
-							currentRoom.getEdge2(), door.getY1()-1, 
-							door.getY1()-furniture.getEdge2());
-				}
-			}
-			else if(furniture.getEdge1() <= door.getY1()){
-				if (game.IsFree(new RecInfo(currentRoom.getX2()-furniture.getEdge2(),
-						currentRoom.getEdge2(), door.getY1()-1, 
-						door.getY1()-furniture.getEdge1()))){
-					return new RecInfo(currentRoom.getX2()-furniture.getEdge2(),
-							currentRoom.getEdge2(), door.getY1()-1, 
-							door.getY1()-furniture.getEdge1());
-				}
-			}
-			if (game.IsFree(new RecInfo(currentRoom.getX2()-furniture.getEdge1(),
-					currentRoom.getEdge2(), door.getY2()+1, 
-					door.getY2()+furniture.getEdge2()))){
-				return new RecInfo(currentRoom.getX2()-furniture.getEdge1(),
-						currentRoom.getEdge2(), door.getY2()+1, 
-						door.getY2()+furniture.getEdge2());
-			if (game.IsFree(new RecInfo(currentRoom.getX2()-furniture.getEdge2(),
-					currentRoom.getEdge2(), door.getY2()+1, 
-					door.getY2()+furniture.getEdge1()))){
-				return new RecInfo(currentRoom.getX2()-furniture.getEdge2(),
-						currentRoom.getEdge2(), door.getY2()+1, 
-						door.getY2()+furniture.getEdge1());
+			x1 = door.getX1() - furniture.getEdge1() - 1;
+			x2 = door.getX1() - 1;
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
 		}
+		
+		if(currentRoom == this.ROOM1 && targetRoom == this.ROOM2){
+			door = this.DOORWAY_ROOMS12;
+			y1 = door.getY1() - furniture.getEdge2() - 1;
+			y2 = door.getY1() - 1;
+			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), y1, y2);
+		}
+		
+		
+		if(currentRoom == this.ROOM2 && targetRoom == this.ROOM1){
+			door = this.DOORWAY_ROOMS12;
+			y1 = door.getY2() + 1;
+			y2 = door.getY2() +furniture.getEdge2() + 1;
+			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), y1, y2);
+		}
+		
+		
+		
+		if(currentRoom == this.ROOM2 && targetRoom == this.ROOM3){
+			door = this.DOORWAY_ROOMS23;
+			x1 = door.getX1() - furniture.getEdge1() - 1;
+			x2 = door.getX1() - 1;
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+		}
+		
+		if(currentRoom == this.ROOM3 && targetRoom == this.ROOM1){
+			door = this.DOORWAY_ROOMS13;
+			x1 = door.getX2() + 1; 
+			x2 = door.getX2() + furniture.getEdge1() + 1;
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+		}
+		
+		if(currentRoom == this.ROOM3 && targetRoom == this.ROOM2){
+			door = this.DOORWAY_ROOMS23;
+			x1 = door.getX2() + 1; 
+			x2 = door.getX2() + furniture.getEdge1() + 1;
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+		}
+		return null;
+		
 	}
 	
 	/************************************************************************ 
