@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
@@ -27,7 +28,10 @@ import javafx.stage.Stage;
 
 public class GameGraphics implements Initializable{
 
+	
 	final static double sizePre=0.99;
+	private static final long MS = 1000;
+	
 	
 	Stack<Paint> cL=new Stack<>();
 	Paint lastInCl;
@@ -126,12 +130,18 @@ public class GameGraphics implements Initializable{
     	int y2 = rectangle.getY2();
 		board1.getChildren().remove(rectangle);
 		try{
-			setRec(rectangle,x1,x2,y1,y2,true);  
+			setRec(rectangle,x1,x2,y1,y2,true);
 	    	board1.getChildren().addAll(rectangle);
+	    	
 		}
 		catch(Exception ex){ System.out.println("Something is wrong");}
         finally{
-        	
+    		// try {
+    		// 	TimeUnit.MILLISECONDS.sleep(MS);
+    		// } catch (InterruptedException e) {
+    		// 	// TODO Auto-generated catch block
+    		// 	e.printStackTrace();
+    		// }
         }     
     }
     

@@ -821,9 +821,9 @@ public class StripsAPI {
 	 */	
 	public void MoveLeft(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1, rect.getX2()-1, 
-				rect.getY1(), rect.getY2());
-		rect.update(destinationInfo);		
+				rect.getY1(), rect.getY2());	
 		game.Move(rect,  destinationInfo);
+		rect.update(destinationInfo);	
 	}
 
 	/**
@@ -831,9 +831,9 @@ public class StripsAPI {
 	 */	
 	public void MoveUp(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
-				rect.getY1()+1, rect.getY2()+1);
-		rect.update(destinationInfo);		
+				rect.getY1()-1, rect.getY2()-1);		
 		game.Move(rect,  destinationInfo);
+		rect.update(destinationInfo);
 	}
 
 	/**
@@ -841,9 +841,9 @@ public class StripsAPI {
 	 */	
 	public void MoveDown(RecInfo rect){
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
-				rect.getY1()-1, rect.getY2()-1);
-		rect.update(destinationInfo);
+				rect.getY1()+1, rect.getY2()+1);
 		game.Move(rect,  destinationInfo);
+		rect.update(destinationInfo);
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */

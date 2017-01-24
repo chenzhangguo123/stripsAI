@@ -15,6 +15,10 @@ public class RecInfo {
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
 	}
+
+	public RecInfo copy(){
+		return new RecInfo(x1,x2,y1,y2);
+	}
 	
 	public int getEdge1() {
 		return edge1;

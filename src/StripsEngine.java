@@ -26,13 +26,14 @@ public class StripsEngine {
 	private static final int DEBUG_SPECIFIC = 3;
 	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
 
+
 /* ---------------------------- Object Construction ------------------------ */
 
 	public StripsEngine(GameGraphics game){
 		this.game = game;
 		this.api = new StripsAPI(game);
 		this.goalStack = new Stack<Condition>();
-		this.plan = new ArrayList<Action>();
+		this.plan = null;
 		this.problems = game.getProblems();
 		this.problemStack = new Stack<Condition>();
 	}
@@ -151,16 +152,17 @@ public class StripsEngine {
 						handleActionCase(Action.MOVE_DOWN);
 						break;
 					case Condition.IS_TO_THE_LEFT: 
-						handleActionCase(Action.MOVE_LEFT);
+						handleActionCase(Action.MOVE_RIGHT);
 						break;
 					case Condition.IS_TO_THE_RIGHT: 
-						handleActionCase(Action.MOVE_RIGHT);
+						handleActionCase(Action.MOVE_LEFT);
 						break;
 					default:
 						break;
 				}   //switch
 			}	//else
-		}
+		} // while
+		printPlan();
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */
@@ -173,6 +175,7 @@ public class StripsEngine {
 	 * in the ProblemsList
 	 */
 	private void prepareGoalStack(){
+		plan = new ArrayList<Action>();
 		for (Problem Problem : problems){
 			ArrayList<RecInfo> args = new ArrayList<RecInfo>();
 			args.add(Problem.getSource());
@@ -241,8 +244,10 @@ public class StripsEngine {
 									  action,
 									  source);
 		if(newAction.CheckPreconditions()){
+			RecInfo printRec = source.copy();
+			Action actionPrint = new Action(api,action,printRec);
 			newAction.Apply();
-			plan.add(newAction);
+			plan.add(actionPrint);
 		}else{
 			for (Condition precondition : newAction.getPreconditions()){
 	        	goalStack.add(precondition);
@@ -296,6 +301,12 @@ public class StripsEngine {
 										  Condition.IN_PLACE,
 										  args,true);
 		goalStack.push(newGoal);
+	}
+
+	private void printPlan(){
+		for(Action action : plan){
+			System.out.println(action.toString());
+		}
 	}
 
 	private static void debugPrint(int debugLevel, String debugText){
