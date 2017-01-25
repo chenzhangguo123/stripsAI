@@ -82,3 +82,8 @@ DONE void Move(RecInfo source, RecInfo dest)
 DONE boolean IsFree(RecInfo space)
 
 DONE ArrayList<Problem> getProblems()
+
+What we can improove:
+1) Loop if need to swap places
+2) Rotation, Rotation near the door, if cannot rotate then find place for rotation.
+3) Order of handling problems.
