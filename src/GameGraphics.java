@@ -126,10 +126,16 @@ public class GameGraphics implements Initializable{
     }
     
     public void Move(RecInfo source, RecInfo dest){
-    	System.out.println("Source="+source+" Dest="+dest);
-    	MyRec rectangle = getRectangleById(source,furL);
-    	if (rectangle == null) {
-    		System.out.println("BUG Null Pointer received!");
+    	System.out.println("Game.move() : Source="+source+" Dest="+dest);
+    	MyRec rectangle;
+    	if(!source.isDummy()){
+ 			rectangle = getRectangleById(source,furL);
+    	}else{
+    		rectangle = getRectangleByPoint(source.getX1(),
+    									    source.getY1(),furL);
+    	}
+    	if(rectangle == null){
+    		System.out.println("Game.Move() : BUG null pointer returned");
     	}
     	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
     	makeMove(rectangle);

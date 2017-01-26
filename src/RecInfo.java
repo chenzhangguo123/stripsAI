@@ -32,7 +32,7 @@ public class RecInfo {
 		this.y2=y2;
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
-		this.id = RecInfo.generateID(x1,x2,y1,y2);
+		this.id = DUMMY_ID;
 		this.targed = null;
 	}	
 
@@ -130,6 +130,10 @@ public class RecInfo {
 	
 	public void setDummy(){
 		this.id = DUMMY_ID;
+	}
+
+	public boolean isDummy(){
+		return this.id.equals(DUMMY_ID);
 	}
 
 	public boolean equalsById(RecInfo rec){
