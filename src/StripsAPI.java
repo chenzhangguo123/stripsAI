@@ -23,7 +23,7 @@ public class StripsAPI {
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_SPECIFIC;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -76,6 +76,7 @@ public class StripsAPI {
 						return info;
 					}
 				}
+				debugPrint(DEBUG_SPECIFIC,"Null Pointer Received");
 				return null;
 			case Action.ROTATE_RIGHT:
 				for(int i = rect.getX1(); i <= rect.getX1()+rect.getEdge2(); i++){
@@ -84,8 +85,10 @@ public class StripsAPI {
 						return info;
 					}
 				}
+				debugPrint(DEBUG_SPECIFIC,"Null Pointer Received");
 				return null;	
 			default: 
+				debugPrint(DEBUG_SPECIFIC,"Null Pointer Received");
 				return null;		
 		}
 	}

@@ -70,6 +70,7 @@ public class GameGraphics implements Initializable{
     @FXML
     private void startSim() {
 		System.out.println("started");
+		printFurnitureLists();
 		StripsEngine engine = new StripsEngine(this);
 		engine.Solve();
 	}
@@ -118,11 +119,23 @@ public class GameGraphics implements Initializable{
     
     public void Move(RecInfo source, RecInfo dest){
     	System.out.println("Source="+source+" Dest="+dest);
-    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	MyRec rectangle = getRectangleById(source,furL);
+    	if (rectangle == null) {
+    		System.out.println("BUG Null Pointer received!");
+    	}
     	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
     	makeMove(rectangle);
-    }
+    }	
     
+	private MyRec getRectangleById(RecInfo source,List<MyRec> boardList){
+		for(MyRec rec : boardList){
+			if (rec.equalsById(source)){
+				return rec;
+			}
+		}
+		return null;
+	}
+
     private void makeMove(MyRec rectangle){
     	int x1 = rectangle.getX1();
     	int x2 = rectangle.getX2();
@@ -299,7 +312,7 @@ public class GameGraphics implements Initializable{
     	}
     	return info;
     }
-    
+
     public RecInfo getRectangleByXAxis(int x1, int x2, int y){
     	RecInfo info = null;
     	MyRec rectangle = null;
@@ -519,4 +532,16 @@ public class GameGraphics implements Initializable{
 			return  y*tileHeight+board1.getLayoutY();
 		return y*tileHeight+board2.getLayoutY();
 	}
-}
+
+	private void printFurnitureLists(){
+		System.out.println("FurL list:");
+		for(MyRec rec : furL){
+			System.out.println(rec.toString());
+		}
+		System.out.println("FurR list:");
+		for(MyRec rec : furR){
+			System.out.println(rec.toString());
+		}		
+	}
+
+ } // End of Class GameGraphics  ------------------------------------------ //

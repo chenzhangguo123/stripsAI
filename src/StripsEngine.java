@@ -24,7 +24,7 @@ public class StripsEngine {
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_SPECIFIC;
 
 
 /* ---------------------------- Object Construction ------------------------ */
@@ -280,20 +280,30 @@ public class StripsEngine {
 		RecInfo tmpPlace = api.findTempObstaclePlace(source,
 										obstacle,
 										action);
-		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
-		args.add(tmpPlace);
-		args.add(oldObstaclePlace);
-		Condition newGoal = new Condition(api,
-										  Condition.IN_PLACE,
-										  args,true);
-		goalStack.push(newGoal);
-		args = new ArrayList<RecInfo>();
-		args.add(source);
-		args.add(targed);
-		newGoal = new Condition(api,
-										  Condition.IN_PLACE,
-										  args,true);
-		goalStack.push(newGoal);
+
+		ArrayList<RecInfo> args;
+		Condition newGoal;
+		boolean needToReturnObstacle = doWeneedToReturnObstacle(oldObstaclePlace,obstacle);
+
+		debugPrint(DEBUG_SPECIFIC,"Obstacle is"+obstacle.toString()+" need to return = "+ needToReturnObstacle);
+
+		if(needToReturnObstacle){
+			args = new ArrayList<RecInfo>();
+			args.add(tmpPlace);
+			args.add(oldObstaclePlace);
+			newGoal = new Condition(api,
+											  Condition.IN_PLACE,
+											  args,true);
+			goalStack.push(newGoal);
+			args = new ArrayList<RecInfo>();
+			args.add(source);
+			args.add(targed);
+			newGoal = new Condition(api,
+											  Condition.IN_PLACE,
+											  args,true);
+			goalStack.push(newGoal);
+		}
+
 		args = new ArrayList<RecInfo>();
 		args.add(obstacle);
 		args.add(tmpPlace);
@@ -307,6 +317,16 @@ public class StripsEngine {
 		for(Action action : plan){
 			System.out.println(action.toString());
 		}
+	}
+
+	private boolean doWeneedToReturnObstacle(RecInfo oldObstaclePlace, 
+		RecInfo obstacle){
+		for (Problem problem : problems) {
+			if (problem.getSource().equalsById(obstacle) && problem.getTarged().equalsById(oldObstaclePlace)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static void debugPrint(int debugLevel, String debugText){

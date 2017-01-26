@@ -1,12 +1,24 @@
 
 public class RecInfo {
+
 	private int x1;
 	private int y1;
 	private int x2;
 	private int y2;
 	private int edge1;
 	private int edge2;
+	private String id;
 	
+
+
+/* ---------------------------- Constant Values ---------------------------- */
+
+	public static final String DUMMY_ID = "ID:[DUMMY]";
+
+/* ---------------------------- DEBUG Environment -------------------------- */
+
+/* ---------------------------- Object Construction ------------------------ */
+
 	public RecInfo(int x1, int x2, int y1, int y2){		
 		this.x1=x1;
 		this.y1=y1;
@@ -14,10 +26,26 @@ public class RecInfo {
 		this.y2=y2;
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
-	}
+		this.id = RecInfo.generateID(x1,x2,y1,y2);
+	}	
+
+		public RecInfo(int x1, int x2, int y1, int y2, String id){		
+		this.x1=x1;
+		this.y1=y1;
+		this.x2=x2;
+		this.y2=y2;
+		edge1=this.x2-this.x1;
+		edge2=this.y2-this.y1;
+		this.id = id;
+	}	
+
+
+/* ----------------------------- Public Methods ---------------------------- */
 
 	public RecInfo copy(){
-		return new RecInfo(x1,x2,y1,y2);
+		RecInfo copy = new RecInfo(x1,x2,y1,y2);
+		copy.setId(this.id);
+		return copy;
 	}
 	
 	public int getEdge1() {
@@ -72,9 +100,41 @@ public class RecInfo {
 		this.edge2 = newInfo.edge2;
 	}
 
-	@Override
-	public String toString(){
-		return "(" + x1 + "," + x2 + "," + y1 + "," + y2 + ")";
+	public String getId(){
+		return this.id;
+	}
+
+	public void setId(String id){
+		this.id = id;
 	}
 	
-}
+	public void setDummy(){
+		this.id = DUMMY_ID;
+	}
+
+	public boolean equalsById(RecInfo rec){
+		return this.id.equals(rec.id);
+	}
+
+	public boolean equalsByCoords(RecInfo rec){
+		return  (x1 == rec.x1) && 
+				(x2 == rec.x2) &&
+				(y1 == rec.y1) &&
+				(y2 == rec.y2);
+	}
+
+
+	public static String generateID(int x1, int x2, int y1, int y2){
+		return "ID:[" + x1 + "#" + x2 + "#" + y1 + "#" + y2 + "]";
+	}
+
+/* ----------------------------- Object Methods ---------------------------- */
+
+	@Override
+	public String toString(){
+		return "(" + x1 + "," + x2 + "," + y1 + "," + y2 + ")" + id;
+	}
+	
+/* ---------------------------- Private Methods ---------------------------- */
+
+ } // End of Class RecInfo ------------------------------------------------ //

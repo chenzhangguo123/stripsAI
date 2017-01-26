@@ -1,12 +1,22 @@
 import javafx.scene.shape.Rectangle;
 
 public class MyRec extends Rectangle{
+
+/* -------------------------------- fields --------------------------------- */	
 	private int x1;
 	private int y1;
 	private int x2;
 	private int y2;
 	private int edge1;
 	private int edge2;
+	private String id;
+
+/* ---------------------------- Constant Values ---------------------------- */
+
+/* ---------------------------- DEBUG Environment -------------------------- */
+
+/* ---------------------------- Object Construction ------------------------ */
+	
 	public MyRec(int x1, int x2, int y1, int y2){
 		super();
 		if(x2<x1){
@@ -25,7 +35,9 @@ public class MyRec extends Rectangle{
 		this.y2=y2;
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
+		this.id = RecInfo.generateID(x1,x2,y1,y2);
 	}
+
 	public MyRec(){	
 		super();
 		this.x1=0;
@@ -34,7 +46,12 @@ public class MyRec extends Rectangle{
 		this.y2=0;
 		edge1=0;
 		edge2=0;
+		this.id = RecInfo.DUMMY_ID;
 	}
+
+
+/* ----------------------------- Public Methods ---------------------------- */
+
 	public void setCor(int x1, int x2, int y1, int y2){	
 		if(x2<x1){
 			int tX1=x1;
@@ -106,11 +123,35 @@ public class MyRec extends Rectangle{
 	public double calDis(MyRec rec){
 		return Math.sqrt((x1-rec.x1)*(x1-rec.x1)+(y1-rec.y1)*(y1-rec.y1));
 	}
-	public String toString(){
-		return super.toString()+" "+x1+" "+x2+" "+y1+" "+y2;		
-	}
+	
+	// public String toString(){
+	// 	return super.toString()+" "+x1+" "+x2+" "+y1+" "+y2;		
+	// }
 	
 	public RecInfo getRecInfo(){
-		return new RecInfo(this.x1, this.x2, this.y1, this.y2);
+		return new RecInfo(this.x1, this.x2, this.y1, this.y2, this.id);
 	}
-}
+
+	public String getRecttId(){
+		return this.id;
+	}
+
+	public boolean equalsById(MyRec rec){
+		return this.id.equals(rec.id);
+	}
+
+	public boolean equalsById(RecInfo rec){
+		return this.id.equals(rec.getId());
+	}
+
+
+/* ----------------------------- Object Methods ---------------------------- */
+
+	@Override
+	public String toString(){
+		return "(" + x1 + "," + x2 + "," + y1 + "," + y2 + ")" + id;
+	}
+
+/* ---------------------------- Private Methods ---------------------------- */
+
+ } // End of Class MyRec --------------------------------------------------- //
