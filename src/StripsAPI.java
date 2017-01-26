@@ -119,7 +119,7 @@ public class StripsAPI {
 			case Action.MOVE_LEFT:		
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
-				if (distanceToWall >= obstacle.getEdge2()){
+				if (distanceToWall >= obstacle.getEdge2()+1){
 					for(int i = obstacle.getY2()+1; i < rect.getY2()+obstacle.getEdge2(); i++){
 						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
 							theLowestPick = i -1;
@@ -135,7 +135,7 @@ public class StripsAPI {
 				}
 				distanceToWall = rect.getY1() - currentRoom.getY1();
 				theHighestPick = obstacle.getY1();
-				if (distanceToWall >= obstacle.getEdge2()){
+				if (distanceToWall >= obstacle.getEdge2()+1){
 					for(int i = obstacle.getY1()-1; i > rect.getY1()-obstacle.getEdge2(); i--){
 						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
 							theHighestPick = i + 1;
@@ -158,7 +158,7 @@ public class StripsAPI {
 			case Action.MOVE_RIGHT:
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
-				if (distanceToWall >= obstacle.getEdge2()){
+				if (distanceToWall >= obstacle.getEdge2()+1){
 					for(int i = obstacle.getY2()+1; i < rect.getY2()+obstacle.getEdge2(); i++){
 						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
 							theLowestPick = i -1;
@@ -174,7 +174,7 @@ public class StripsAPI {
 				}
 				distanceToWall = rect.getY1() - currentRoom.getY1();
 				theHighestPick = obstacle.getY1();
-				if (distanceToWall >= obstacle.getEdge2()){
+				if (distanceToWall >= obstacle.getEdge2()+1){
 					for(int i = obstacle.getY1()-1; i > rect.getY1()-obstacle.getEdge2(); i--){
 						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
 							theHighestPick = i + 1;
@@ -197,7 +197,7 @@ public class StripsAPI {
 			case Action.MOVE_UP:
 				distanceToWall = currentRoom.getX2() - rect.getX2();
 				theMostRightPick = obstacle.getX2();
-				if (distanceToWall >= obstacle.getEdge1()){
+				if (distanceToWall >= obstacle.getEdge1()+1){
 					for(int i = obstacle.getX2()+1; i < rect.getX2()+obstacle.getEdge1(); i++){
 						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 							theMostRightPick = i -1;
@@ -213,7 +213,7 @@ public class StripsAPI {
 				}
 				distanceToWall = rect.getX1() - currentRoom.getX1();
 				theMostLeftPick = obstacle.getX1();
-				if (distanceToWall >= obstacle.getEdge1()){
+				if (distanceToWall >= obstacle.getEdge1()+1){
 					for(int i = obstacle.getX1()-1; i > rect.getX1()-obstacle.getEdge1(); i--){
 						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 							theMostLeftPick = i + 1;
@@ -236,7 +236,7 @@ public class StripsAPI {
 			case Action.MOVE_DOWN:
 				distanceToWall = currentRoom.getX2() - rect.getX2();
 				theMostRightPick = obstacle.getX2();
-				if (distanceToWall >= obstacle.getEdge1()){
+				if (distanceToWall >= obstacle.getEdge1()+1){
 					for(int i = obstacle.getX2()+1; i < rect.getX2()+obstacle.getEdge1(); i++){
 						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 							theMostRightPick = i -1;
@@ -252,7 +252,7 @@ public class StripsAPI {
 				}
 				distanceToWall = rect.getX1() - currentRoom.getX1();
 				theMostLeftPick = obstacle.getX1();
-				if (distanceToWall >= obstacle.getEdge1()){
+				if (distanceToWall >= obstacle.getEdge1()+1){
 					for(int i = obstacle.getX1()-1; i > rect.getX1()-obstacle.getEdge1(); i--){
 						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 							theMostLeftPick = i + 1;
@@ -857,7 +857,7 @@ public class StripsAPI {
 /* ---------------------------- Private Methods ---------------------------- */
 
 	private static void debugPrint(int debugLevel, String debugText){
-		if(debugLevel == CURRENT_DEBUG_LEVEL || debugLevel == DEBUG_ALL){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
 		}

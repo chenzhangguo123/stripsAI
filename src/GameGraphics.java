@@ -28,10 +28,10 @@ import javafx.stage.Stage;
 
 public class GameGraphics implements Initializable{
 
+/* -------------------------------- fields --------------------------------- */
 	
 	final static double sizePre=0.99;
 	private static final long MS = 1000;
-	
 	
 	Stack<Paint> cL=new Stack<>();
 	Paint lastInCl;
@@ -66,7 +66,13 @@ public class GameGraphics implements Initializable{
 
     @FXML
     private GridPane board2;      
-    
+
+/* ---------------------------- Constant Values ---------------------------- */
+
+/* ---------------------------- DEBUG Environment -------------------------- */
+
+/* ---------------------------- Object Construction ------------------------ */    
+
     @FXML
     private void startSim() {
 		System.out.println("started");
@@ -86,7 +92,9 @@ public class GameGraphics implements Initializable{
 			if (info == null){
 				System.out.println("Destination rectangle is missing");
 			} else{
-				problems.add(new Problem(rectangle.getRecInfo(), info));
+				rectangle.setTarged(info);
+				RecInfo sourceInfo = rectangle.getRecInfo();
+				problems.add(new Problem(sourceInfo, info));
 			}
 		}
 
@@ -182,6 +190,7 @@ public class GameGraphics implements Initializable{
     	makeMove(rectangle);
     }
     */
+
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	help.setOnAction(

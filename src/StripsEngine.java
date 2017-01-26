@@ -24,7 +24,8 @@ public class StripsEngine {
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_SPECIFIC;
+	private static final int DEBUG_NONE = -1;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
 
 
 /* ---------------------------- Object Construction ------------------------ */
@@ -50,7 +51,9 @@ public class StripsEngine {
 			// Lets look at our top Goal, if it is satisfied, just pop it out
 			Condition currentGoal = goalStack.peek();
 			Condition currentProblem = problemStack.peek();
-			debugPrint(DEBUG_FUNCTION,"currentGoal is "+currentGoal.toString());
+			debugPrint(DEBUG_FUNCTION,
+				"currentGoal is "+currentGoal.toString() + "\n" +
+				"currentProblem is "+currentProblem.toString());
 			if(currentGoal.isSatisfied()){
 				debugPrint(DEBUG_FUNCTION,"The Goal:"+currentGoal.toString() + 
 						"poped out of the GoalStack");
@@ -64,7 +67,6 @@ public class StripsEngine {
 					 * Then we will add SubGoals to our GoalStack
 					 */
 					case Condition.IN_PLACE:
-						debugPrint(DEBUG_FUNCTION,"Entered IN_PLACE");
 						/* If we face a new problem that we never seen before
 						 * add it to the problemStack
 						 */
@@ -276,16 +278,15 @@ public class StripsEngine {
 		RecInfo targed = currentProblem.getArgs().get(1);
 		RecInfo obstacle = api.getObstacle(source,
 										action);
+		debugPrint(DEBUG_SPECIFIC,"getObstacle returned "+obstacle);
 		RecInfo oldObstaclePlace = obstacle.copy();
 		RecInfo tmpPlace = api.findTempObstaclePlace(source,
 										obstacle,
 										action);
-
+		debugPrint(DEBUG_SPECIFIC,"findTempObstaclePlace returned "+tmpPlace);
 		ArrayList<RecInfo> args;
 		Condition newGoal;
 		boolean needToReturnObstacle = doWeneedToReturnObstacle(oldObstaclePlace,obstacle);
-
-		debugPrint(DEBUG_SPECIFIC,"Obstacle is"+obstacle.toString()+" need to return = "+ needToReturnObstacle);
 
 		if(needToReturnObstacle){
 			args = new ArrayList<RecInfo>();
@@ -321,16 +322,22 @@ public class StripsEngine {
 
 	private boolean doWeneedToReturnObstacle(RecInfo oldObstaclePlace, 
 		RecInfo obstacle){
-		for (Problem problem : problems) {
-			if (problem.getSource().equalsById(obstacle) && problem.getTarged().equalsById(oldObstaclePlace)) {
-				return true;
+		boolean result = false;
+		RecInfo obstacleTarged = obstacle.getTarged();
+		if(obstacleTarged != null){
+			if (obstacleTarged.equalsByCoords(oldObstaclePlace)) {
+				result = true;
 			}
 		}
-		return false;
+		debugPrint(DEBUG_SPECIFIC,"Obstacle is"+obstacle.toString()+"\n" +
+			"obstacle.targed = "+ obstacleTarged + "\n" +
+			"obstacleOldPlace = "+ oldObstaclePlace + "\n" +
+			"Need to return = "+ result);
+		return result;
 	}
 
 	private static void debugPrint(int debugLevel, String debugText){
-		if(debugLevel == CURRENT_DEBUG_LEVEL || debugLevel == DEBUG_ALL){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
 		}

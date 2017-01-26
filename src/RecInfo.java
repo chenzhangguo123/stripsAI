@@ -8,14 +8,20 @@ public class RecInfo {
 	private int edge1;
 	private int edge2;
 	private String id;
-	
-
+	private RecInfo targed;
 
 /* ---------------------------- Constant Values ---------------------------- */
 
 	public static final String DUMMY_ID = "ID:[DUMMY]";
 
 /* ---------------------------- DEBUG Environment -------------------------- */
+
+	private static final String DEBUG_TAG = "RecInfo";
+	private static final int DEBUG_ALL = 0;
+	private static final int DEBUG_CLASS = 1;
+	private static final int DEBUG_FUNCTION = 2;
+	private static final int DEBUG_SPECIFIC = 3;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -27,6 +33,7 @@ public class RecInfo {
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
 		this.id = RecInfo.generateID(x1,x2,y1,y2);
+		this.targed = null;
 	}	
 
 		public RecInfo(int x1, int x2, int y1, int y2, String id){		
@@ -37,6 +44,7 @@ public class RecInfo {
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
 		this.id = id;
+		this.targed = null;
 	}	
 
 
@@ -45,6 +53,7 @@ public class RecInfo {
 	public RecInfo copy(){
 		RecInfo copy = new RecInfo(x1,x2,y1,y2);
 		copy.setId(this.id);
+		copy.setTarged(this.targed);
 		return copy;
 	}
 	
@@ -107,6 +116,17 @@ public class RecInfo {
 	public void setId(String id){
 		this.id = id;
 	}
+
+	public void setTarged(RecInfo targed){
+		if(targed == null){
+			debugPrint(DEBUG_FUNCTION,"setTarged(): Warning, null pointer set!");
+		}
+		this.targed = targed;
+	}
+
+	public RecInfo getTarged(){
+		return this.targed;
+	}
 	
 	public void setDummy(){
 		this.id = DUMMY_ID;
@@ -136,5 +156,13 @@ public class RecInfo {
 	}
 	
 /* ---------------------------- Private Methods ---------------------------- */
+
+	private static void debugPrint(int debugLevel, String debugText){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
+			System.out.println("Debug print: "+DEBUG_TAG);
+			System.out.println(debugText);
+		}
+	}
+
 
  } // End of Class RecInfo ------------------------------------------------ //

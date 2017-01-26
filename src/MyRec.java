@@ -10,10 +10,18 @@ public class MyRec extends Rectangle{
 	private int edge1;
 	private int edge2;
 	private String id;
+	private RecInfo targed;
 
 /* ---------------------------- Constant Values ---------------------------- */
 
 /* ---------------------------- DEBUG Environment -------------------------- */
+
+	private static final String DEBUG_TAG = "RecInfo";
+	private static final int DEBUG_ALL = 0;
+	private static final int DEBUG_CLASS = 1;
+	private static final int DEBUG_FUNCTION = 2;
+	private static final int DEBUG_SPECIFIC = 3;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
 
 /* ---------------------------- Object Construction ------------------------ */
 	
@@ -36,6 +44,7 @@ public class MyRec extends Rectangle{
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
 		this.id = RecInfo.generateID(x1,x2,y1,y2);
+		this.targed = null;
 	}
 
 	public MyRec(){	
@@ -47,6 +56,7 @@ public class MyRec extends Rectangle{
 		edge1=0;
 		edge2=0;
 		this.id = RecInfo.DUMMY_ID;
+		this.targed = null;
 	}
 
 
@@ -129,7 +139,17 @@ public class MyRec extends Rectangle{
 	// }
 	
 	public RecInfo getRecInfo(){
-		return new RecInfo(this.x1, this.x2, this.y1, this.y2, this.id);
+		RecInfo info = new RecInfo(this.x1, this.x2, 
+								this.y1, this.y2, this.id);
+		info.setTarged(this.targed);
+		return info;
+	}
+
+	public void setTarged(RecInfo targed){
+		if(targed == null){
+			debugPrint(DEBUG_FUNCTION,"setTarged(): Warning, null pointer set!");
+		}
+		this.targed = targed;
 	}
 
 	public String getRecttId(){
@@ -153,5 +173,12 @@ public class MyRec extends Rectangle{
 	}
 
 /* ---------------------------- Private Methods ---------------------------- */
+
+	private static void debugPrint(int debugLevel, String debugText){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
+			System.out.println("Debug print: "+DEBUG_TAG);
+			System.out.println(debugText);
+		}
+	}
 
  } // End of Class MyRec --------------------------------------------------- //
