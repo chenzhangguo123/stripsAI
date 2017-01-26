@@ -10,6 +10,7 @@ public class MyRec extends Rectangle{
 	private int edge1;
 	private int edge2;
 	private String id;
+	private RecInfo info;
 	private RecInfo targed;
 
 /* ---------------------------- Constant Values ---------------------------- */
@@ -45,6 +46,7 @@ public class MyRec extends Rectangle{
 		edge2=this.y2-this.y1;
 		this.id = RecInfo.generateID(x1,x2,y1,y2);
 		this.targed = null;
+		this.info = new RecInfo(x1,x2,y1,y2,this.id);
 	}
 
 	public MyRec(){	
@@ -57,6 +59,7 @@ public class MyRec extends Rectangle{
 		edge2=0;
 		this.id = RecInfo.DUMMY_ID;
 		this.targed = null;
+		this.info = new RecInfo(x1,x2,y1,y2,id);
 	}
 
 
@@ -139,9 +142,6 @@ public class MyRec extends Rectangle{
 	// }
 	
 	public RecInfo getRecInfo(){
-		RecInfo info = new RecInfo(this.x1, this.x2, 
-								this.y1, this.y2, this.id);
-		info.setTarged(this.targed);
 		return info;
 	}
 
@@ -150,6 +150,7 @@ public class MyRec extends Rectangle{
 			debugPrint(DEBUG_FUNCTION,"setTarged(): Warning, null pointer set!");
 		}
 		this.targed = targed;
+		this.info.setTarged(targed);
 	}
 
 	public String getRecttId(){
