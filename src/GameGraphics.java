@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -66,6 +68,10 @@ public class GameGraphics implements Initializable{
 
     @FXML
     private GridPane board2;      
+    
+    //Treads
+    public Thread solveThread;
+    public Task<Void> solveTask;
 
 /* ---------------------------- Constant Values ---------------------------- */
 
@@ -75,10 +81,21 @@ public class GameGraphics implements Initializable{
 
     @FXML
     private void startSim() {
+    	GameGraphics game = this;
 		System.out.println("started");
 		printFurnitureLists();
-		StripsEngine engine = new StripsEngine(this);
-		engine.Solve();
+		StripsEngine engine = new StripsEngine(game);
+		solveTask = new Task<Void>() {
+            @Override 
+            public Void call() throws Exception {
+            	System.out.println("inside new thread");
+        		engine.Solve();
+                return null;
+            }
+        };
+        solveThread = new Thread(solveTask);
+        solveThread.setDaemon(true);
+        solveThread.start();
 	}
     
     public ArrayList<Problem> getProblems(){
@@ -151,25 +168,32 @@ public class GameGraphics implements Initializable{
 	}
 
     private void makeMove(MyRec rectangle){
-    	int x1 = rectangle.getX1();
-    	int x2 = rectangle.getX2();
-    	int y1 = rectangle.getY1();
-    	int y2 = rectangle.getY2();
-		board1.getChildren().remove(rectangle);
-		try{
-			setRec(rectangle,x1,x2,y1,y2,true);
-	    	board1.getChildren().addAll(rectangle);
-	    	
-		}
-		catch(Exception ex){ System.out.println("Something is wrong");}
-        finally{
-    		// try {
-    		// 	TimeUnit.MILLISECONDS.sleep(MS);
-    		// } catch (InterruptedException e) {
-    		// 	// TODO Auto-generated catch block
-    		// 	e.printStackTrace();
-    		// }
-        }     
+		 try {
+ 		 	TimeUnit.MILLISECONDS.sleep(MS);
+ 		 } catch (InterruptedException e) {
+ 		 	// TODO Auto-generated catch block
+ 		 	e.printStackTrace();
+ 		 }
+	      Platform.runLater(new Runnable() {
+	          @Override
+	          public void run() {
+	      		//Make Move code
+	            int x1 = rectangle.getX1();
+	           	int x2 = rectangle.getX2();
+	           	int y1 = rectangle.getY1();
+	           	int y2 = rectangle.getY2();
+	       		board1.getChildren().remove(rectangle);
+	       		try{
+	       			setRec(rectangle,x1,x2,y1,y2,true);
+	       	    	board1.getChildren().addAll(rectangle);
+	       	    	System.out.println("moved");	    	
+	       		}
+	       		catch(Exception ex){ System.out.println("Something is wrong");}
+	               finally{
+	               }     
+	           	//end of Make Move code
+	          }
+	        });
     }
     
    /* public void moveRight(RecInfo source){
