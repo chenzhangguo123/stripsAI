@@ -12,8 +12,11 @@ public class StripsAPI {
 	public final RecInfo ROOM2 = new RecInfo(0,7,5,11);
 	public final RecInfo ROOM3 = new RecInfo(8,19,0,11);
 	public final RecInfo DOORWAY_ROOMS12 = new RecInfo(2,5,4,5);
+	public final RecInfo CORRIDOR12 = new RecInfo(2,5,0,11);
 	public final RecInfo DOORWAY_ROOMS13 = new RecInfo(7,8,1,3);
+	public final RecInfo CORRIDOR13 = new RecInfo(0,19,1,3);
 	public final RecInfo DOORWAY_ROOMS23 = new RecInfo(7,8,6,10);
+	public final RecInfo CORRIDOR23 = new RecInfo(0,19,6,10);
 	
 	
 /* ---------------------------- DEBUG Environment -------------------------- */
@@ -24,6 +27,8 @@ public class StripsAPI {
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
 	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
+	// Assertions
+	private static final boolean ENABLE_ASSERT = true;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -976,7 +981,20 @@ public class StripsAPI {
 		// rect.update(destinationInfo);
 	}
 
-	public boolean validateRectInfo(){
+	public boolean validateRectInfo(RecInfo rect){
+		if(rect == null){
+			InvokeAssert(true,"RectInfo validation Assert: null pointer received!");
+			return false;
+		}
+		if (!InSpace(rect,ROOM1) &&
+			!InSpace(rect,ROOM2) &&
+			!InSpace(rect,ROOM3) &&
+			!InSpace(rect,CORRIDOR13) &&
+			!InSpace(rect,CORRIDOR12) &&
+			!InSpace(rect,CORRIDOR23)){
+			InvokeAssert(true,"RectInfo validation Assert: The RectInfo: "+ rect + " is Ilegal!");
+			return false;
+		}
 		return true;
 	}
 
@@ -988,6 +1006,13 @@ public class StripsAPI {
 		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
+		}
+	}
+
+	private static void InvokeAssert(boolean expression, String text){
+		if(ENABLE_ASSERT){
+			System.out.println(text);
+			assert !expression;
 		}
 	}
 

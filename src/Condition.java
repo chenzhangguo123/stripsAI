@@ -90,7 +90,21 @@ public class Condition {
 	 * @return Check() AND desired value 	
 	 */ 
 	public boolean isSatisfied(){
+		validateArgs();
 		return (desiredValue == Check());
+	}
+
+	/**
+	 * Method Checks if all the arguments of this condition are legal 
+	 * @return false if one of the arguments is illegal, else true
+	 */ 
+	public boolean validateArgs(){
+		for (RecInfo rect : args) {
+			if(api.validateRectInfo(rect) == false){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/* --- Getters --- */

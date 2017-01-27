@@ -14,8 +14,16 @@ public class StripsEngine {
 	//aux
 	private Stack<Condition> problemStack;
 
+	//Loop prevention
+	private int iterationsSinceLastMove;
+	private int movesMade;
 	
 /* ---------------------------- Constant Values ---------------------------- */
+
+	//Infinite Loop prevention
+	private static final int ALLOWED_ITERATIONS_UNTIL_MOVE = 200;
+	private static final int MAX_MOVES_FOR_EACH_PROBLEM = 1000;
+	private static final int MAX_STACK_SIZE_PER_PROBLEM = 100;
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
@@ -43,12 +51,19 @@ public class StripsEngine {
 
 	public void Solve(){
 		debugPrint(DEBUG_FUNCTION,"reached Solve");
+		iterationsSinceLastMove = 0;
+		movesMade = 0;
 		prepareGoalStack();
 
 		/* We will continue to solve problems until our goalStack is empty */
 		while(goalStack.empty() != true){
+			//Check if we are not in an infinite loop:
+			if(isInfiniteLoop()){
+				break;
+			}
 
 			// Lets look at our top Goal, if it is satisfied, just pop it out
+			iterationsSinceLastMove++;
 			Condition currentGoal = goalStack.peek();
 			Condition currentProblem = problemStack.peek();
 			debugPrint(DEBUG_FUNCTION,
@@ -250,6 +265,8 @@ public class StripsEngine {
 			Action actionPrint = new Action(api,action,printRec);
 			newAction.Apply();
 			plan.add(actionPrint);
+			iterationsSinceLastMove = 0;
+			movesMade++;
 		}else{
 			for (Condition precondition : newAction.getPreconditions()){
 	        	goalStack.add(precondition);
@@ -265,7 +282,7 @@ public class StripsEngine {
 	 * to let us apply the action and after we apply it, we 
 	 * return the obstacle to it's original place
 	 * so we add the following to the GoalStack:
-	 * ST-2. IN_PLACE(tmpPlace,oldObstaclePlace) = true : Return the 
+	 * ST-2. IN_PLACE(obstacle,oldObstaclePlace) = true : Return the 
 	 *	obstacle to it's original place
 	 * ST-1. IN_PLACE(source, targed) = true :
 	 *	move source to targed
@@ -280,6 +297,7 @@ public class StripsEngine {
 										action);
 		debugPrint(DEBUG_SPECIFIC,"getObstacle returned "+obstacle);
 		RecInfo oldObstaclePlace = obstacle.copy();
+		oldObstaclePlace.setDummy();
 		RecInfo tmpPlace = api.findTempObstaclePlace(source,
 										obstacle,
 										action);
@@ -290,7 +308,7 @@ public class StripsEngine {
 
 		if(needToReturnObstacle){
 			args = new ArrayList<RecInfo>();
-			args.add(tmpPlace);
+			args.add(obstacle);
 			args.add(oldObstaclePlace);
 			newGoal = new Condition(api,
 											  Condition.IN_PLACE,
@@ -336,11 +354,31 @@ public class StripsEngine {
 		return result;
 	}
 
+
+	private boolean isInfiniteLoop(){
+		if(iterationsSinceLastMove > ALLOWED_ITERATIONS_UNTIL_MOVE){
+			debugPrint(DEBUG_FUNCTION,"Infinite Loop: iterationsSinceLastMove = "+iterationsSinceLastMove);
+			return true;
+		}
+		if(movesMade > MAX_MOVES_FOR_EACH_PROBLEM*problems.size()){
+			debugPrint(DEBUG_FUNCTION,"Infinite Loop: movesMade = "+movesMade);			
+			return true;
+		}
+		if(goalStack.size() > MAX_STACK_SIZE_PER_PROBLEM*problems.size()){
+			debugPrint(DEBUG_FUNCTION,"Infinite Loop: goalStack Size = "+goalStack.size());	
+			return true;
+		}
+		return false;
+	}
+
 	private static void debugPrint(int debugLevel, String debugText){
 		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
 		}
 	}
+
+
+
 
  } // End of Class StripsEngine -------------------------------------------- //
