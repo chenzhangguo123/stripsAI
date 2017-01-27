@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 
 public class StripsAPI {
 /* -------------------------------- fields *-------------------------------- */
@@ -23,7 +23,7 @@ public class StripsAPI {
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_SPECIFIC;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -879,61 +879,93 @@ public class StripsAPI {
 	/**
 	 * @param
 	 */
-	public void RotateRight(RecInfo rect){
-		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX1()+rect.getEdge2(), 
-										rect.getY2()+1, rect.getY2()+rect.getEdge1()+1);
+	public void RotateRight(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"RotateRight() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();		
+		RecInfo destinationInfo = new RecInfo(rect.getX1(), 
+											rect.getX1()+rect.getEdge2(), 
+											rect.getY2()+1, 
+											rect.getY2()+rect.getEdge1()+1);
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);		
+		// rect.update(destinationInfo);		
 	}
 	
 	/**
 	 * @param
 	 */
-	public void RotateLeft(RecInfo rect){
+	public void RotateLeft(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"RotateLeft() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();		
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1-rect.getEdge2(), rect.getX1()-1, 
 				rect.getY2()-1, rect.getY2()+rect.getEdge1()-1);
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);		
+		// rect.update(destinationInfo);		
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveRight(RecInfo rect){
+	public void MoveRight(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"MoveRight() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();
 		RecInfo destinationInfo = new RecInfo(rect.getX1()+1, rect.getX2()+1, 
 							rect.getY1(), rect.getY2());
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);		
+		// rect.update(destinationInfo);		
 	}
 	
 	/**
 	 * @param
 	 */	
-	public void MoveLeft(RecInfo rect){
+	public void MoveLeft(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"MoveLeft() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();		
 		RecInfo destinationInfo = new RecInfo(rect.getX1()-1, rect.getX2()-1, 
 				rect.getY1(), rect.getY2());	
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);	
+		// rect.update(destinationInfo);	
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveUp(RecInfo rect){
+	public void MoveUp(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"MoveUp() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();		
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()-1, rect.getY2()-1);		
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);
+		// rect.update(destinationInfo);
 	}
 
 	/**
 	 * @param
 	 */	
-	public void MoveDown(RecInfo rect){
+	public void MoveDown(RecInfo source){
+		MyRec rectangle = game.findRectangle(source);
+		if(rectangle==null){
+			debugPrint(DEBUG_FUNCTION,"MoveDown() : BUG rectangle is not found!");
+		}
+		RecInfo rect = rectangle.getRecInfo();		
 		RecInfo destinationInfo = new RecInfo(rect.getX1(), rect.getX2(), 
 				rect.getY1()+1, rect.getY2()+1);
 		game.Move(rect,  destinationInfo);
-		rect.update(destinationInfo);
+		// rect.update(destinationInfo);
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */

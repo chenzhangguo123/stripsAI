@@ -17,12 +17,12 @@ public class MyRec extends Rectangle{
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
-	private static final String DEBUG_TAG = "RecInfo";
+	private static final String DEBUG_TAG = "MyRec";
 	private static final int DEBUG_ALL = 0;
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
 
 /* ---------------------------- Object Construction ------------------------ */
 	
@@ -82,7 +82,7 @@ public class MyRec extends Rectangle{
 		this.y2=y2;
 		edge1=this.x2-this.x1;
 		edge2=this.y2-this.y1;
-		//System.out.println(x1+" "+x2+" "+y1+" "+y2);
+		this.info.setCor(x1,x2,y1,y2);
 	}
 	
 	public int getX1(){

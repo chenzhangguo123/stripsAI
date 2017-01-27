@@ -32,9 +32,6 @@ public class GameGraphics implements Initializable{
 
 /* -------------------------------- fields --------------------------------- */
 	
-	final static double sizePre=0.99;
-	private static final long MS = 1000;
-	
 	Stack<Paint> cL=new Stack<>();
 	Paint lastInCl;
 	
@@ -69,158 +66,29 @@ public class GameGraphics implements Initializable{
     @FXML
     private GridPane board2;      
     
-    //Treads
+    //Threading - nneded to view every move and not only the final result
     public Thread solveThread;
     public Task<Void> solveTask;
 
+
 /* ---------------------------- Constant Values ---------------------------- */
+
+	final static double sizePre=0.99;
+
+    //Time between each move in milliseconds
+    private static final long MS = 1000;
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
-/* ---------------------------- Object Construction ------------------------ */    
+	private static final String DEBUG_TAG = "GameGraphics";
+	private static final int DEBUG_ALL = 0;
+	private static final int DEBUG_CLASS = 1;
+	private static final int DEBUG_FUNCTION = 2;
+	private static final int DEBUG_SPECIFIC = 3;
+	private static final int DEBUG_NONE = -1;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
 
-    @FXML
-    private void startSim() {
-    	GameGraphics game = this;
-		System.out.println("started");
-		printFurnitureLists();
-		StripsEngine engine = new StripsEngine(game);
-		solveTask = new Task<Void>() {
-            @Override 
-            public Void call() throws Exception {
-            	System.out.println("inside new thread");
-        		engine.Solve();
-                return null;
-            }
-        };
-        solveThread = new Thread(solveTask);
-        solveThread.setDaemon(true);
-        solveThread.start();
-	}
-    
-    public ArrayList<Problem> getProblems(){
-		ArrayList<Problem> problems = new ArrayList<Problem>();
-		
-		MyRec rectangle = null;
-		RecInfo info = null;
-		for(int i =0; i < furL.size(); i++){
-			rectangle = furL.get(i);
-			info = findRectangleMatch(rectangle);
-			if (info == null){
-				System.out.println("Destination rectangle is missing");
-			} else{
-				rectangle.setTarged(info);
-				RecInfo sourceInfo = rectangle.getRecInfo();
-				problems.add(new Problem(sourceInfo, info));
-			}
-		}
-
-		return problems;
-	}
-
-    private RecInfo findRectangleMatch(MyRec rectangle) {
-    	MyRec destRectangle = null;
-		for(int index = 0; index < furR.size(); index++){
-			destRectangle = furR.get(index);
-			if (rectangle.checkEdges(destRectangle)){
-				return new RecInfo(destRectangle.getX1(), destRectangle.getX2(), destRectangle.getY1(), destRectangle.getY2());
-			}
-		}
-		return null;
-	}
-
-    public boolean IsFree(RecInfo space){
-    	MyRec rectangle = null;
-    	for(int x = space.getX1(); x <= space.getX2(); x ++){
-    		for(int y = space.getY1(); y <= space.getY2(); y++){
-    			rectangle = getRectangleByPoint(x, y, furL);
-    			if (rectangle != null){
-    				return false;
-    			}
-    		}
-    	}
-    	return true;
-    }
-    
-    public void Move(RecInfo source, RecInfo dest){
-    	System.out.println("Game.move() : Source="+source+" Dest="+dest);
-    	MyRec rectangle;
-    	if(!source.isDummy()){
- 			rectangle = getRectangleById(source,furL);
-    	}else{
-    		rectangle = getRectangleByPoint(source.getX1(),
-    									    source.getY1(),furL);
-    	}
-    	if(rectangle == null){
-    		System.out.println("Game.Move() : BUG null pointer returned");
-    	}
-    	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
-    	makeMove(rectangle);
-    }	
-    
-	private MyRec getRectangleById(RecInfo source,List<MyRec> boardList){
-		for(MyRec rec : boardList){
-			if (rec.equalsById(source)){
-				return rec;
-			}
-		}
-		return null;
-	}
-
-    private void makeMove(MyRec rectangle){
-		 try {
- 		 	TimeUnit.MILLISECONDS.sleep(MS);
- 		 } catch (InterruptedException e) {
- 		 	// TODO Auto-generated catch block
- 		 	e.printStackTrace();
- 		 }
-	      Platform.runLater(new Runnable() {
-	          @Override
-	          public void run() {
-	      		//Make Move code
-	            int x1 = rectangle.getX1();
-	           	int x2 = rectangle.getX2();
-	           	int y1 = rectangle.getY1();
-	           	int y2 = rectangle.getY2();
-	       		board1.getChildren().remove(rectangle);
-	       		try{
-	       			setRec(rectangle,x1,x2,y1,y2,true);
-	       	    	board1.getChildren().addAll(rectangle);
-	       	    	System.out.println("moved");	    	
-	       		}
-	       		catch(Exception ex){ System.out.println("Something is wrong");}
-	               finally{
-	               }     
-	           	//end of Make Move code
-	          }
-	        });
-    }
-    
-   /* public void moveRight(RecInfo source){
-		MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
-    	rectangle.moveToRight();
-    	makeMove(rectangle);
-    }
-    
-    public void moveLeft(RecInfo source){
-    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
-    	rectangle.moveToLeft();
-    	makeMove(rectangle);
-    }
-    
-    public void moveUp(RecInfo source){
-    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
-    	rectangle.moveUp();
-    	makeMove(rectangle);
-    }
-    
-    public void moveDown(RecInfo source){
-    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
-    	rectangle.moveDown();
-    	makeMove(rectangle);
-    }
-    */
-
+/* --------------------------- Graphics Initialize ------------------------- */    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	help.setOnAction(
@@ -338,6 +206,85 @@ public class GameGraphics implements Initializable{
     		
         });
     }
+
+/* ---------------------------- Start Simulator ---------------------------- */  
+    @FXML
+    private void startSim() {
+    	GameGraphics game = this;
+		System.out.println("started");
+		printFurnitureLists();
+		StripsEngine engine = new StripsEngine(game);
+		solveTask = new Task<Void>() {
+            @Override 
+            public Void call() throws Exception {
+            	System.out.println("inside new thread");
+        		engine.Solve();
+                return null;
+            }
+        };
+        solveThread = new Thread(solveTask);
+        solveThread.setDaemon(true);
+        solveThread.start();
+	}
+
+/* ----------------------------- Public Methods ---------------------------- */
+    
+    public ArrayList<Problem> getProblems(){
+		ArrayList<Problem> problems = new ArrayList<Problem>();
+		
+		MyRec rectangle = null;
+		RecInfo info = null;
+		for(int i =0; i < furL.size(); i++){
+			rectangle = furL.get(i);
+			info = findRectangleMatch(rectangle);
+			if (info == null){
+				System.out.println("Destination rectangle is missing");
+			} else{
+				rectangle.setTarged(info);
+				RecInfo sourceInfo = rectangle.getRecInfo();
+				problems.add(new Problem(sourceInfo, info));
+			}
+		}
+
+		return problems;
+	}
+
+    public boolean IsFree(RecInfo space){
+    	MyRec rectangle = null;
+    	for(int x = space.getX1(); x <= space.getX2(); x ++){
+    		for(int y = space.getY1(); y <= space.getY2(); y++){
+    			rectangle = getRectangleByPoint(x, y, furL);
+    			if (rectangle != null){
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
+    
+    public void Move(RecInfo source, RecInfo dest){
+    	System.out.println("Game.move() : Source="+source+" Dest="+dest);
+    	MyRec rectangle = findRectangle(source);
+
+    	// TODO : Add here alert (assert ?) for trying to move out of the board
+    	rectangle.setCor(dest.getX1(), dest.getX2(), dest.getY1(), dest.getY2());
+    	makeMove(rectangle);
+    }
+
+    public MyRec findRectangle(RecInfo info){
+    	MyRec rectangle;
+    	if(!info.isDummy()){
+ 			rectangle = getRectangleById(info,furL);
+    	}else{
+    		rectangle = getRectangleByPoint(info.getX1(),
+    									    info.getY1(),furL);
+    	}
+    	if(rectangle == null){
+    		debugPrint(DEBUG_FUNCTION,"Game.Move() : BUG null pointer returned");
+    	}
+    	return rectangle;
+    }
+
     
     public RecInfo getRectangleByYAxis(int x, int y1, int y2){
     	RecInfo info = null;
@@ -365,6 +312,8 @@ public class GameGraphics implements Initializable{
     	return info;
     }
     
+/* ---------------------------- Private Methods ---------------------------- */
+
 	private boolean legalPlace(int x1, int x2, int y1, int y2, boolean isBoard1) {
 		List<MyRec> tFur=null;
 		if(isBoard1)
@@ -436,6 +385,7 @@ public class GameGraphics implements Initializable{
         	rec.setFill(recPaint);
         }
 	}
+
 	private void getPressed(MouseEvent e, boolean isBoard1) {
 		if(e.getButton().equals(MouseButton.PRIMARY)){
 			pressed=true;
@@ -509,6 +459,7 @@ public class GameGraphics implements Initializable{
 		        	rec.setFill(recPaint);
 				}
 	}
+
 	private MyRec getRecInPoint(double cY, double cX, List<MyRec> tFur, boolean isBoard1) {
 		for(MyRec rec:tFur){
 			double x=getRecX(rec,isBoard1);
@@ -583,4 +534,89 @@ public class GameGraphics implements Initializable{
 		}		
 	}
 
+    private RecInfo findRectangleMatch(MyRec rectangle) {
+    	MyRec destRectangle = null;
+		for(int index = 0; index < furR.size(); index++){
+			destRectangle = furR.get(index);
+			if (rectangle.checkEdges(destRectangle)){
+				return new RecInfo(destRectangle.getX1(), destRectangle.getX2(), destRectangle.getY1(), destRectangle.getY2());
+			}
+		}
+		return null;
+	}
+
+    
+	private MyRec getRectangleById(RecInfo source,List<MyRec> boardList){
+		for(MyRec rec : boardList){
+			if (rec.equalsById(source)){
+				return rec;
+			}
+		}
+		return null;
+	}
+
+    private void makeMove(MyRec rectangle){
+		 try {
+ 		 	TimeUnit.MILLISECONDS.sleep(MS);
+ 		 } catch (InterruptedException e) {
+ 		 	// TODO Auto-generated catch block
+ 		 	e.printStackTrace();
+ 		 }
+	      Platform.runLater(new Runnable() {
+	          @Override
+	          public void run() {
+	      		//Make Move code
+	            int x1 = rectangle.getX1();
+	           	int x2 = rectangle.getX2();
+	           	int y1 = rectangle.getY1();
+	           	int y2 = rectangle.getY2();
+	       		board1.getChildren().remove(rectangle);
+	       		try{
+	       			setRec(rectangle,x1,x2,y1,y2,true);
+	       	    	board1.getChildren().addAll(rectangle);
+	       	    	System.out.println("moved");	    	
+	       		}
+	       		catch(Exception ex){ System.out.println("Something is wrong");}
+	               finally{
+	               }     
+	           	//end of Make Move code
+	          }
+	        });
+    }
+
+	private static void debugPrint(int debugLevel, String debugText){
+		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
+			System.out.println("Debug print: "+DEBUG_TAG);
+			System.out.println(debugText);
+		}
+	}
+
+
  } // End of Class GameGraphics  ------------------------------------------ //
+
+ /* ------------------------------- Old Code ------------------------------- */
+
+   /* public void moveRight(RecInfo source){
+		MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveToRight();
+    	makeMove(rectangle);
+    }
+    
+    public void moveLeft(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveToLeft();
+    	makeMove(rectangle);
+    }
+    
+    public void moveUp(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveUp();
+    	makeMove(rectangle);
+    }
+    
+    public void moveDown(RecInfo source){
+    	MyRec rectangle = getRectangleByPoint(source.getX1(), source.getY1(), furL);
+    	rectangle.moveDown();
+    	makeMove(rectangle);
+    }
+    */
