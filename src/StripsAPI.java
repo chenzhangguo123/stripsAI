@@ -838,6 +838,14 @@ public class StripsAPI {
 	 * @return
 	 */
 	public boolean Rotated(RecInfo rect1, RecInfo rect2){
+		debugPrint(DEBUG_SPECIFIC,"Rotated(): \n"+
+			"rect1 = "+rect1 + "\n" +			
+			"rect2 = "+rect2 + "\n" +			
+			"rect1.getEdge1() = "+rect1.getEdge1() + "\n" +
+			"rect2.getEdge1() = "+rect2.getEdge1() + "\n" +
+			"rect1.getEdge2() = "+rect1.getEdge2() + "\n" +
+			"rect2.getEdge2() = "+rect2.getEdge2() + "\n"
+			);
 		return !(rect1.getEdge1() == rect2.getEdge1() && rect1.getEdge2() == rect2.getEdge2());
 	} // rect1 is rotated related to rect2
 	
@@ -966,6 +974,10 @@ public class StripsAPI {
 				rect.getY1()+1, rect.getY2()+1);
 		game.Move(rect,  destinationInfo);
 		// rect.update(destinationInfo);
+	}
+
+	public boolean validateRectInfo(){
+		return true;
 	}
 
 /* ----------------------------- Object Methods ---------------------------- */

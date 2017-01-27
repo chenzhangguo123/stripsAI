@@ -556,12 +556,12 @@ public class GameGraphics implements Initializable{
 	}
 
     private void makeMove(MyRec rectangle){
-		 try {
- 		 	TimeUnit.MILLISECONDS.sleep(MS);
- 		 } catch (InterruptedException e) {
- 		 	// TODO Auto-generated catch block
- 		 	e.printStackTrace();
- 		 }
+//		 try {
+// 		 	TimeUnit.MILLISECONDS.sleep(MS);
+// 		 } catch (InterruptedException e) {
+// 		 	// TODO Auto-generated catch block
+// 		 	e.printStackTrace();
+// 		 }
 	      Platform.runLater(new Runnable() {
 	          @Override
 	          public void run() {
@@ -582,6 +582,12 @@ public class GameGraphics implements Initializable{
 	           	//end of Make Move code
 	          }
 	        });
+	    	try {
+				Thread.sleep(MS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     }
 
 	private static void debugPrint(int debugLevel, String debugText){
