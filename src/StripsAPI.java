@@ -197,14 +197,21 @@ public class StripsAPI {
 		}
 		
 		if(distanceToTopWall >= distanceToBottomWall){
+			System.out.println("Distance to top wall is greater");
+			System.out.println("Distance to wall is " + distanceToTopWall 
+					+ " obstacle length " + (obstacle.getEdge2() + 1));
 			if(distanceToTopWall >= obstacle.getEdge2() + 1){
-				new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+				System.out.println("before returnig, obstacle is not null");
+				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY1() - obstacle.getEdge2() - 1, rect.getY1()-1);
 			}
 		}
 		else{ 
+			System.out.println("Distance to top wall is greater");
+			System.out.println("Distance to wall is " + distanceToTopWall 
+					+ " obstacle length " + (obstacle.getEdge2() + 1));
 			if(distanceToBottomWall >= obstacle.getEdge2() + 1){
-				new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY2() + 1, rect.getY2()+ 1 + obstacle.getEdge2());
 			}
 		}
@@ -244,6 +251,7 @@ public class StripsAPI {
 		}
 		
 		if (distanceToRightWall >= obstacle.getEdge1()+1){
+			System.out.println("Distance to right wall");
 			for(int i = obstacle.getX2()+1; i <= rect.getX2()+obstacle.getEdge1()+1; i++){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostRightPick = i -1;
@@ -269,6 +277,7 @@ public class StripsAPI {
 
 
 		if (distanceToLeftWall >= obstacle.getEdge1()+1){
+			System.out.println("Distance to left wall");
 			for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostLeftPick = i + 1;
@@ -294,6 +303,7 @@ public class StripsAPI {
 		
 		if(!(actionName == Action.MOVE_UP && obstacle.getY1() == currentRoom.getY1())
 				&& !(actionName == Action.MOVE_DOWN && obstacle.getY2() == currentRoom.getY2())){
+			System.out.println("up or down");
 			RecInfo tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
 			while (tempRec != null){
 				if(tempRec.getX1() - theMostLeftPick >= obstacle.getEdge1() + 1){
@@ -311,13 +321,19 @@ public class StripsAPI {
 		
 		
 		if(distanceToLeftWall >= distanceToRightWall){
+			System.out.println("Distance to left wall is greater");
+			System.out.println("Distance to wall is " + distanceToLeftWall 
+					+ " obstacle length " + (obstacle.getEdge1() + 1));
 			if(distanceToLeftWall >= obstacle.getEdge1() + 1){
-				new RecInfo(rect.getX1() - obstacle.getEdge1()-1, rect.getX1()-1,
+				return new RecInfo(rect.getX1() - obstacle.getEdge1()-1, rect.getX1()-1,
 											obstacle.getY1(), obstacle.getY2());
 			}
 		}
 		else if(distanceToRightWall >= obstacle.getEdge1() + 1){
-			new RecInfo(rect.getX2() +1, rect.getX2() + obstacle.getEdge1() + 1, 
+			System.out.println("Distance to right wall is greater");
+			System.out.println("Distance to wall is " + distanceToRightWall 
+					+ " obstacle length " + (obstacle.getEdge1() + 1));
+			return new RecInfo(rect.getX2() +1, rect.getX2() + obstacle.getEdge1() + 1, 
 					obstacle.getY1(), obstacle.getY2());
 			}
 		return null;
@@ -762,10 +778,12 @@ public class StripsAPI {
 		if (y1 < DOORWAY_ROOMS13.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between door and upper wall
 			return false;
 		}
-		if (y1 > DOORWAY_ROOMS13.getY2() && y1 < DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
+		if (y1 > DOORWAY_ROOMS13.getY2() && y1 < DOORWAY_ROOMS23.getY1() 
+				&& x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
 			return false;
 		}
-		if (y2 > DOORWAY_ROOMS13.getY1() && y2 < DOORWAY_ROOMS23.getY1() && x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
+		if (y2 > DOORWAY_ROOMS13.getY2() && y2 < DOORWAY_ROOMS23.getY1() 
+				&& x1 <= DOORWAY_ROOMS13.getX1() && x2 >= DOORWAY_ROOMS13.getX2()){ //between doors
 			return false;
 		}
 		if (y2 > DOORWAY_ROOMS23.getY2() && x1 <= DOORWAY_ROOMS23.getX1() && x2 >= DOORWAY_ROOMS23.getX2()){ //between door and bottom wall
@@ -790,23 +808,41 @@ public class StripsAPI {
 	 */
 	public boolean CanRotateRight(RecInfo rect){
 		int x1 = rect.getX1();
+		int x2 = rect.getX2();
 		int y1 = rect.getY1();
 		int y2 = rect.getY2();
 		int edge1 = rect.getEdge1();
 		int edge2 = rect.getEdge2();
 		
 		
-		int newX1 = x1;
-		int newX2 = x1 + edge2;
-		int newY1 = y2+1;
-		int newY2 = y2 + edge1+1;
+		int newX1 = x2+1;
+		int newX2 = newX1 + edge2;
+		int newY1 = y1;
+		int newY2 = (int) (y1 + Math.round( Math.sqrt( 
+				   Math.pow(edge1+1,2)
+				+  Math.pow(edge2+1,2))));
 		
 
 		if (notEncountersWalls(new RecInfo(newX1, newX2, newY1, newY2)) == false){
 			return false;
 		}
 		
-		return game.IsFree(new RecInfo(newX1, newX2, newY1, newY2));
+		if (!game.IsFree(new RecInfo(newX1, newX2, newY1, newY2))){
+			return false;
+		}
+		
+		newY1 = y2+1;
+		
+		if (notEncountersWalls(new RecInfo(x1, x2, newY1, newY2)) == false){
+			return false;
+		}
+		
+		if (!game.IsFree(new RecInfo(x1, x2, newY1, newY2))){
+			return false;
+		}
+		
+		return true;
+
 	} // there is enough space to make right rotation
 	
 	/**
