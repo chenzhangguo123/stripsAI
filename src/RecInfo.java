@@ -24,7 +24,7 @@ public class RecInfo {
 	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
 	
 	//Assertions
-	private static final boolean ASSERT_ON_SWAPPED_COORDS = false;
+	private static final boolean ASSERT_ON_SWAPPED_COORDS = true;
 
 /* ---------------------------- Object Construction ------------------------ */
 
