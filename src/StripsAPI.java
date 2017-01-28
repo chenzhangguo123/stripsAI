@@ -101,6 +101,232 @@ public class StripsAPI {
 	 * Method calculates temprary place, in the same room, where we can 
 	 * move the Obstacle, so we will be able to preform the action
 	 */
+	private RecInfo findTempObstaclePlaceMovingAside(RecInfo rect, 
+									     RecInfo obstacle,
+									     String actionName){
+		RecInfo currentRoom = getRoom(rect);
+		int distanceToBottomWall = currentRoom.getY2() - rect.getY2();
+		int distanceToTopWall = rect.getY1() - currentRoom.getY1();
+		int theLowestPick = obstacle.getY2();
+		boolean found = false;
+		
+		int additionalFactor = 0;
+		int searchLocation = -1;
+		switch(actionName){
+			case Action.MOVE_LEFT:
+				additionalFactor = -1;
+				searchLocation = obstacle.getX1()-1;
+				break;
+			case Action.MOVE_RIGHT:
+				additionalFactor = 1;
+				searchLocation = obstacle.getX2()+1;
+				break;
+		}
+		
+		if (distanceToBottomWall >= obstacle.getEdge2()+1){
+			for(int i = obstacle.getY2()+1; i <= rect.getY2()+distanceToBottomWall; i++){
+				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+					theLowestPick = i -1;
+					found = true;
+					break;
+				}
+			}
+			if (!found){
+				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+						rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
+			}
+			found = false;	
+		}
+		else{
+			theLowestPick = rect.getY2()+distanceToBottomWall;
+			for(int i = obstacle.getY2()+1; i <= rect.getY2()+distanceToBottomWall; i++){
+				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+					theLowestPick = i - 1;
+					break;
+				}
+			}
+		}
+		distanceToTopWall = rect.getY1() - currentRoom.getY1();
+		int theHighestPick = obstacle.getY1();
+		if (distanceToTopWall >= obstacle.getEdge2()+1){
+			for(int i = obstacle.getY1()-1; i >= rect.getY1()-obstacle.getEdge2()-1; i--){
+				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+					theHighestPick = i + 1;
+					found = true;
+					break;
+				}
+			}
+			if (!found){
+				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+						rect.getY1()-obstacle.getEdge2()-1, rect.getY1() - 1);
+			}
+			found = false;	
+		}
+		else{
+			theHighestPick = rect.getY1()-distanceToTopWall;
+			for(int i = obstacle.getY1()-1; i >= rect.getY1()-distanceToTopWall; i--){
+				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+					theHighestPick = i + 1;
+					break;
+				}
+			}
+		}
+		
+		int closestTopObstacleY = theHighestPick;
+		int closestBottomObstacleY = theLowestPick;
+		
+		if(actionName == Action.MOVE_LEFT && obstacle.getX1() == currentRoom.getX1()){
+			return null; //TODO 
+		}
+		if(actionName == Action.MOVE_RIGHT && obstacle.getX2() == currentRoom.getX2()){
+			return null; //TODO 
+		}
+		RecInfo tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
+		while (tempRec != null){
+			if(tempRec.getY1() - theHighestPick >= obstacle.getEdge2() + 1){
+				return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor, 
+															theHighestPick, theHighestPick + obstacle.getEdge2());
+			}
+			theHighestPick = tempRec.getY2()+1;
+			tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
+		}
+		if(theHighestPick+obstacle.getEdge2() <= theLowestPick){
+			return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor,
+														theHighestPick, theHighestPick+obstacle.getEdge2());
+		}
+		if(distanceToTopWall >= distanceToBottomWall){
+			if(distanceToTopWall >= obstacle.getEdge2() + 1){
+				new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+						rect.getY1() - obstacle.getEdge2() - 1, rect.getY1()-1);
+			}
+		}
+		else{ 
+			if(distanceToBottomWall >= obstacle.getEdge2() + 1){
+				new RecInfo(obstacle.getX1(), obstacle.getX2(), 
+						rect.getY2() + 1, rect.getY2()+ 1 + obstacle.getEdge2());
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * @param rect
+	 * @param obstacle
+	 * @param actionName
+	 * @return
+	 */
+	private RecInfo findTempObstaclePlaceUpDown(RecInfo rect, 
+									     RecInfo obstacle,
+									     String actionName){
+		
+		RecInfo currentRoom = getRoom(rect);
+		int distanceToRightWall = currentRoom.getX2() - rect.getX2();
+		int distanceToLeftWall = rect.getX1() - currentRoom.getX1();
+		int theMostRightPick = obstacle.getX2();
+		int theMostLeftPick = obstacle.getX1();
+		boolean found = false;
+		
+		int additionalFactor = 0;
+		int searchLocation = -1;
+		switch(actionName){
+			case Action.MOVE_UP:
+				additionalFactor = -1;
+				searchLocation = obstacle.getY1()-1;
+				break;
+			case Action.MOVE_DOWN:
+				additionalFactor = 1;
+				searchLocation = obstacle.getY2()+1;
+				break;
+		}
+		
+		if (distanceToRightWall >= obstacle.getEdge1()+1){
+			for(int i = obstacle.getX2()+1; i <= rect.getX2()+obstacle.getEdge1()+1; i++){
+				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+					theMostRightPick = i -1;
+					found = true;
+					break;
+				}
+			}
+			if (!found){
+				return new RecInfo(rect.getX2()+1, rect.getX2()+obstacle.getEdge1()+1, 
+						obstacle.getY1(), obstacle.getY2());
+			}
+			found = false;	
+		}
+		else{
+			theMostRightPick = rect.getX2()+distanceToRightWall;
+			for(int i = obstacle.getX2()+1; i <= rect.getX2()+distanceToRightWall; i++){
+				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+					theMostRightPick = i - 1;
+					break;
+				}
+			}
+		}
+
+
+		if (distanceToLeftWall >= obstacle.getEdge1()+1){
+			for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
+				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+					theMostLeftPick = i + 1;
+					found = true;
+					break;
+				}
+			}
+			if (!found){
+				return new RecInfo(rect.getX1()-obstacle.getEdge1()-1, rect.getX1()-1,
+						obstacle.getY1(), obstacle.getY2());
+			}
+			found = false;	
+		}
+		else{
+			theMostLeftPick = rect.getX1()-distanceToLeftWall;
+			for(int i = obstacle.getX1()-1; i >= rect.getX1()-distanceToLeftWall; i--){
+				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
+					theMostLeftPick = i + 1;
+					break;
+				}
+			}
+		}
+		
+		if(actionName == Action.MOVE_UP && obstacle.getY1() == currentRoom.getY1()){
+			return null; //TODO 
+		}
+		if(actionName == Action.MOVE_DOWN && obstacle.getY2() == currentRoom.getY2()){
+			return null; //TODO 
+		}
+		
+		
+		RecInfo tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
+		while (tempRec != null){
+			if(tempRec.getX1() - theMostLeftPick >= obstacle.getEdge1() + 1){
+				return new RecInfo(theMostLeftPick, theMostLeftPick+obstacle.getEdge1(), 
+						obstacle.getY1()+additionalFactor, obstacle.getY2()+additionalFactor);
+			}
+			theMostLeftPick = tempRec.getX2()+1;
+			tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
+		}
+		if(theMostLeftPick+obstacle.getEdge1() <= theMostRightPick){
+			return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(),
+					obstacle.getY1()+additionalFactor, obstacle.getY2()+additionalFactor);
+		}
+		if(distanceToLeftWall >= distanceToRightWall){
+			if(distanceToLeftWall >= obstacle.getEdge1() + 1){
+				new RecInfo(rect.getX1() - obstacle.getEdge1()-1, rect.getX1()-1,
+											obstacle.getY1(), obstacle.getY2());
+			}
+		}
+		else if(distanceToRightWall >= obstacle.getEdge1() + 1){
+			new RecInfo(rect.getX2() +1, rect.getX2() + obstacle.getEdge1() + 1, 
+					obstacle.getY1(), obstacle.getY2());
+			}
+		return null;
+	}
+
+	/**
+	 * Method calculates temprary place, in the same room, where we can 
+	 * move the Obstacle, so we will be able to preform the action
+	 */
 	public RecInfo findTempObstaclePlace(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
@@ -121,245 +347,11 @@ public class StripsAPI {
 		int counter;
 			switch(actionName){
 			case Action.MOVE_LEFT:		
-				distanceToWall = currentRoom.getY2() - rect.getY2();
-				theLowestPick = obstacle.getY2();
-				if (distanceToWall >= obstacle.getEdge2()+1){
-					for(int i = obstacle.getY2()+1; i <= rect.getY2()+obstacle.getEdge2()+1; i++){
-						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-							theLowestPick = i -1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
-					}
-					found = false;	
-				}
-				else{
-					theLowestPick = rect.getY2()+distanceToWall;
-					for(int i = obstacle.getY2()+1; i <= rect.getY2()+distanceToWall; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theLowestPick = i - 1;
-							break;
-						}
-					}
-				}
-				distanceToWall = rect.getY1() - currentRoom.getY1();
-				theHighestPick = obstacle.getY1();
-				if (distanceToWall >= obstacle.getEdge2()+1){
-					for(int i = obstacle.getY1()-1; i >= rect.getY1()-obstacle.getEdge2()-1; i--){
-						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-							theHighestPick = i + 1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY1() - 1, rect.getY1()-obstacle.getEdge2()-1);
-					}
-					found = false;	
-				}
-				else{
-					theHighestPick = rect.getY1()-distanceToWall;
-					for(int i = obstacle.getY1()-1; i <= rect.getY1()-distanceToWall; i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theHighestPick = i + 1;
-							break;
-						}
-					}
-				}
-				tempRec = game.getRectangleByYAxis(obstacle.getX1()-1, theLowestPick, theHighestPick);
-				while (tempRec != null){
-					theLowestPick = tempRec.getY2()+1;
-					tempRec = game.getRectangleByYAxis(obstacle.getX1()-1, theLowestPick, theHighestPick);
-				}
-				if(theHighestPick+obstacle.getEdge2() <= theLowestPick){
-					return new RecInfo(obstacle.getX1()-1, obstacle.getX2()-1, theLowestPick, theLowestPick+obstacle.getEdge2());
-				}
-				return null;
 			case Action.MOVE_RIGHT:
-				distanceToWall = currentRoom.getY2() - rect.getY2();
-				theLowestPick = obstacle.getY2();
-				if (distanceToWall >= obstacle.getEdge2()+1){
-					for(int i = obstacle.getY2()+1; i <= rect.getY2()+obstacle.getEdge2()+1; i++){
-						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-							theLowestPick = i -1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
-					}
-					found = false;	
-				}
-				else{
-					theLowestPick = rect.getY2()+distanceToWall;
-					for(int i = obstacle.getY2()+1; i <= rect.getY2()+distanceToWall; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theLowestPick = i - 1;
-							break;
-						}
-					}
-				}
-				distanceToWall = rect.getY1() - currentRoom.getY1();
-				theHighestPick = obstacle.getY1();
-				if (distanceToWall >= obstacle.getEdge2()+1){
-					for(int i = obstacle.getY1()-1; i >= rect.getY1()-obstacle.getEdge2()-1; i--){
-						if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-							theHighestPick = i + 1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY1() - 1, rect.getY1()-obstacle.getEdge2()-1);
-					}
-					found = false;	
-				}
-				else{
-					theHighestPick = rect.getY1()-distanceToWall;
-					for(int i = obstacle.getY1()-1; i <= rect.getY1()-distanceToWall; i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theHighestPick = i + 1;
-							break;
-						}
-					}
-				}
-				tempRec = game.getRectangleByYAxis(obstacle.getX2()+1, theLowestPick, theHighestPick);
-				while (tempRec != null){
-					theLowestPick = tempRec.getY2()+1;
-					tempRec = game.getRectangleByYAxis(obstacle.getX2()+1, theLowestPick, theHighestPick);
-				}
-				if(theHighestPick+obstacle.getEdge2() <= theLowestPick){
-					return new RecInfo(obstacle.getX1()+1, obstacle.getX2()+1, theLowestPick, theLowestPick+obstacle.getEdge2());
-				}
-				return null;
+				return findTempObstaclePlaceMovingAside(rect, obstacle, actionName);
 			case Action.MOVE_UP:
-				distanceToWall = currentRoom.getX2() - rect.getX2();
-				theMostRightPick = obstacle.getX2();
-				if (distanceToWall >= obstacle.getEdge1()+1){
-					for(int i = obstacle.getX2()+1; i <= rect.getX2()+obstacle.getEdge1()+1; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostRightPick = i -1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(rect.getX2()+1, rect.getX2()+obstacle.getEdge1()+1, 
-								obstacle.getY1(), obstacle.getY2());
-					}
-					found = false;	
-				}
-				else{
-					theMostRightPick = rect.getX2()+distanceToWall;
-					for(int i = obstacle.getX2()+1; i <= rect.getX2()+distanceToWall; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostRightPick = i - 1;
-							break;
-						}
-					}
-				}
-				distanceToWall = rect.getX1() - currentRoom.getX1();
-				theMostLeftPick = obstacle.getX1();
-				if (distanceToWall >= obstacle.getEdge1()+1){
-					for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostLeftPick = i + 1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY1() - 1, rect.getY1()-obstacle.getEdge2()-1);
-					}
-					found = false;	
-				}
-				else{
-					theMostLeftPick = rect.getX1()-distanceToWall;
-					for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostLeftPick = i + 1;
-							break;
-						}
-					}
-				}
-				tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY1()-1);
-				while (tempRec != null){
-					theMostLeftPick = tempRec.getX2()+1;
-					tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY1()-1);
-				}
-				if(theMostLeftPick+obstacle.getEdge1() <= theMostRightPick){
-					return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(), obstacle.getY1()-1, obstacle.getY2()-1);
-				}
-				return null;
-			case Action.MOVE_DOWN:
-				distanceToWall = currentRoom.getX2() - rect.getX2();
-				theMostRightPick = obstacle.getX2();
-				if (distanceToWall >= obstacle.getEdge1()+1){
-					for(int i = obstacle.getX2()+1; i <= rect.getX2()+obstacle.getEdge1()+1; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostRightPick = i -1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(rect.getX2()+1, rect.getX2()+obstacle.getEdge1()+1, 
-								obstacle.getY1(), obstacle.getY2());
-					}
-					found = false;	
-				}
-				else{
-					theMostRightPick = rect.getX2()+distanceToWall;
-					for(int i = obstacle.getX2()+1; i <= rect.getX2()+distanceToWall; i++){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostRightPick = i - 1;
-							break;
-						}
-					}
-				}
-				distanceToWall = rect.getX1() - currentRoom.getX1();
-				theMostLeftPick = obstacle.getX1();
-				if (distanceToWall >= obstacle.getEdge1()+1){
-					for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostLeftPick = i + 1;
-							found = true;
-							break;
-						}
-					}
-					if (!found){
-						return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
-								rect.getY1() - 1, rect.getY1()-obstacle.getEdge2()-1);
-					}
-					found = false;	
-				}
-				else{
-					theMostLeftPick = rect.getX1()-distanceToWall;
-					for(int i = obstacle.getX1()-1; i > rect.getX1()-obstacle.getEdge1(); i--){
-						if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
-							theMostLeftPick = i + 1;
-							break;
-						}
-					}
-				}
-				tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY2()+1);
-				while (tempRec != null){
-					theMostLeftPick = tempRec.getX2()+1;
-					tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, obstacle.getY2()+1);
-				}
-				if(theMostLeftPick+obstacle.getEdge1() <= theMostRightPick){
-					return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(), obstacle.getY1()+1, obstacle.getY2()+1);
-				}
-				return null;
+			case Action.MOVE_DOWN://TODO change the lowest and the highest
+				return findTempObstaclePlaceUpDown(rect, obstacle, actionName);
 			case Action.ROTATE_LEFT://TODO calculate the exact upper limit
 				distanceToWall = currentRoom.getY2() - rect.getY2();
 				theLowestPick = obstacle.getY2();
@@ -677,7 +669,11 @@ public class StripsAPI {
 			return false;
 		}
 		
-		if (x1 == this.DOORWAY_ROOMS13.getX2()+1){
+		if (x1 == this.ROOM3.getX1()) { //cannot move into wall; 
+			return false;
+		}
+		
+		/*if (x1 == this.DOORWAY_ROOMS13.getX2()+1){
 			if(y1 >= this.DOORWAY_ROOMS13.getY1() && y2 <= this.DOORWAY_ROOMS13.getY2()){ //Door
 				if (game.getRectangleByYAxis(x1-1, this.DOORWAY_ROOMS13.getY1(), this.DOORWAY_ROOMS13.getY2()) == null){
 					return true;
@@ -691,7 +687,7 @@ public class StripsAPI {
 				return false;
 			}
 			return false;
-		}
+		}*/
 		
 		if (x1 == this.DOORWAY_ROOMS12.getX1() && y1 <= this.DOORWAY_ROOMS12.getY1() && y2 >= this.DOORWAY_ROOMS12.getY2()){
 			return false;
