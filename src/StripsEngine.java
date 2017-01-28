@@ -22,7 +22,7 @@ public class StripsEngine {
 
 	//Infinite Loop prevention
 	private static final int ALLOWED_ITERATIONS_UNTIL_MOVE = 200;
-	private static final int MAX_MOVES_FOR_EACH_PROBLEM = 1000;
+	private static final int MAX_MOVES_FOR_EACH_PROBLEM = 100;
 	private static final int MAX_STACK_SIZE_PER_PROBLEM = 100;
 
 /* ---------------------------- DEBUG Environment -------------------------- */

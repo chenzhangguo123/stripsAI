@@ -22,6 +22,9 @@ public class RecInfo {
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
 	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
+	
+	//Assertions
+	private static final boolean ASSERT_ON_SWAPPED_COORDS = false;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -34,6 +37,7 @@ public class RecInfo {
 		edge2=Math.abs(this.y2-this.y1);
 		this.id = DUMMY_ID;
 		this.targed = null;
+		validate();
 	}	
 
 		public RecInfo(int x1, int x2, int y1, int y2, String id){		
@@ -45,6 +49,7 @@ public class RecInfo {
 		edge2=Math.abs(this.y2-this.y1);
 		this.id = id;
 		this.targed = null;
+		validate();
 	}	
 
 
@@ -107,6 +112,7 @@ public class RecInfo {
 		this.y2 = newInfo.y2;
 		this.edge1 = newInfo.edge1;
 		this.edge2 = newInfo.edge2;
+		validate();
 	}
 
 	public void setCor(int x1, int x2, int y1, int y2){
@@ -116,6 +122,7 @@ public class RecInfo {
 		this.y2 = y2;
 		edge1=Math.abs(this.x2-this.x1);
 		edge2=Math.abs(this.y2-this.y1);
+		validate();
 	}
 
 	public String getId(){
@@ -177,5 +184,21 @@ public class RecInfo {
 		}
 	}
 
+	private void validate(){
+		//Swapping coordinates if needed
+		int tmp=0;
+		if(x1>x2){
+			Global.InvokeAssert(ASSERT_ON_SWAPPED_COORDS, "RecInfo: "+ this.toString() +"Swapped X coordinates Assertion!");
+			tmp = x1;
+			x1 = x2;
+			x2 = tmp;
+		}
+		if(y1>y2){
+			Global.InvokeAssert(ASSERT_ON_SWAPPED_COORDS, "RecInfo: "+ this.toString() +"Swapped Y coordinates Assertion!");
+			tmp = y1;
+			y1 = y2;
+			y2 = tmp;
+		}
+	}
 
  } // End of Class RecInfo ------------------------------------------------ //

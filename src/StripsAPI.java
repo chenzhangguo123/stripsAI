@@ -26,9 +26,8 @@ public class StripsAPI {
 	private static final int DEBUG_CLASS = 1;
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
-	// Assertions
-	private static final boolean ENABLE_ASSERT = true;
+	private static final int DEBUG_NONE = -1;	
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_NONE;
 
 /* ---------------------------- Object Construction ------------------------ */
 
@@ -983,7 +982,7 @@ public class StripsAPI {
 
 	public boolean validateRectInfo(RecInfo rect){
 		if(rect == null){
-			InvokeAssert(true,"RectInfo validation Assert: null pointer received!");
+			Global.InvokeAssert(true,"RectInfo validation Assert: null pointer received!");
 			return false;
 		}
 		if (!InSpace(rect,ROOM1) &&
@@ -992,7 +991,7 @@ public class StripsAPI {
 			!InSpace(rect,CORRIDOR13) &&
 			!InSpace(rect,CORRIDOR12) &&
 			!InSpace(rect,CORRIDOR23)){
-			InvokeAssert(true,"RectInfo validation Assert: The RectInfo: "+ rect + " is Ilegal!");
+			Global.InvokeAssert(true,"RectInfo validation Assert: The RectInfo: "+ rect + " is Ilegal!");
 			return false;
 		}
 		return true;
@@ -1006,13 +1005,6 @@ public class StripsAPI {
 		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
-		}
-	}
-
-	private static void InvokeAssert(boolean expression, String text){
-		if(ENABLE_ASSERT){
-			System.out.println(text);
-			assert !expression;
 		}
 	}
 
