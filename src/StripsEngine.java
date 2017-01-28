@@ -135,16 +135,24 @@ public class StripsEngine {
 					 * see handleObstacleCase() bellow
 					 */
 					case Condition.CAN_MOVE_UP:
-						handleObstacleCase(Action.MOVE_UP);
+						if (!canAvoidObstacle(Action.MOVE_UP)) {
+							handleObstacleCase(Action.MOVE_UP);	
+						}
 						break;
 					case Condition.CAN_MOVE_DOWN:
-						handleObstacleCase(Action.MOVE_DOWN);
+						if (!canAvoidObstacle(Action.MOVE_DOWN)) {
+							handleObstacleCase(Action.MOVE_DOWN);
+						}
 						break;
 					case Condition.CAN_MOVE_LEFT:
-						handleObstacleCase(Action.MOVE_LEFT);
+						if (!canAvoidObstacle(Action.MOVE_LEFT)) {
+							handleObstacleCase(Action.MOVE_LEFT);
+						}
 						break;
 					case Condition.CAN_MOVE_RIGHT:
-						handleObstacleCase(Action.MOVE_RIGHT);
+						if(!canAvoidObstacle(Action.MOVE_RIGHT)){
+							handleObstacleCase(Action.MOVE_RIGHT);
+						}
 						break;
 					case Condition.CAN_ROTATE_RIGHT:
 						handleObstacleCase(Action.ROTATE_RIGHT);
@@ -160,7 +168,12 @@ public class StripsEngine {
 					 * see handleActionCase() below
 					 */
 					case Condition.ROTATED: 
-						handleActionCase(Action.ROTATE_LEFT);
+						RecInfo source = currentGoal.getArgs().get(0);
+						if(api.CanRotateRight(source)){
+							handleActionCase(Action.ROTATE_RIGHT);
+						}else{
+							handleActionCase(Action.ROTATE_LEFT);
+						}
 						break;
 					case Condition.IS_LOWER: 
 						handleActionCase(Action.MOVE_UP);
@@ -371,14 +384,58 @@ public class StripsEngine {
 		return false;
 	}
 
+	private boolean canAvoidObstacle(String action){
+		Condition currentProblem = problemStack.peek();
+		Condition currentGoal = goalStack.peek();
+		RecInfo source = currentGoal.getArgs().get(0);
+		RecInfo targed = currentProblem.getArgs().get(1);
+		Condition newGoal;
+		ArrayList<RecInfo> args = new ArrayList<RecInfo>();
+		args.add(source);
+		args.add(targed);
+		switch(action){
+			case Action.MOVE_LEFT:
+			case Action.MOVE_RIGHT:
+				if(api.IsHigher(source,targed) && api.CanMoveDown(source)){
+					newGoal = new Condition(api,Condition.IS_HIGHER,
+													  args,false);
+					goalStack.push(newGoal);
+					return true;
+				}
+				if(api.IsLower(source,targed) && api.CanMoveUp(source)){
+					newGoal = new Condition(api,Condition.IS_LOWER,
+													  args,false);
+					goalStack.push(newGoal);
+					return true;
+				}		
+				break;		
+			case Action.MOVE_UP:
+			case Action.MOVE_DOWN:
+				if(api.IsToTheLeft(source,targed) && api.CanMoveRight(source)){
+					newGoal = new Condition(api,Condition.IS_TO_THE_LEFT,
+													  args,false);
+					goalStack.push(newGoal);
+					return true;
+				}
+				if(api.IsToTheRight(source,targed) && api.CanMoveLeft(source)){
+					newGoal = new Condition(api,Condition.IS_TO_THE_RIGHT,
+													  args,false);
+					goalStack.push(newGoal);
+					return true;
+				}					
+				break;
+			default: 
+				debugPrint(DEBUG_FUNCTION,"canAvoidObstacle(): BUG - Reached default case");
+		}
+		return false;
+	}
+
 	private static void debugPrint(int debugLevel, String debugText){
 		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);
 			System.out.println(debugText);
 		}
 	}
-
-
 
 
  } // End of Class StripsEngine -------------------------------------------- //
