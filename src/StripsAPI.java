@@ -104,6 +104,7 @@ public class StripsAPI {
 	private RecInfo findTempObstaclePlaceMovingAside(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
+		System.out.println("Obstacle aside");
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToBottomWall = currentRoom.getY2() - rect.getY2();
 		int distanceToTopWall = rect.getY1() - currentRoom.getY1();
@@ -124,14 +125,17 @@ public class StripsAPI {
 		}
 		
 		if (distanceToBottomWall >= obstacle.getEdge2()+1){
-			for(int i = obstacle.getY2()+1; i <= rect.getY2()+distanceToBottomWall; i++){
+			System.out.println("Checking down");
+			for(int i = obstacle.getY2()+1; i <= rect.getY2()+obstacle.getEdge2()+1; i++){
 				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
+					System.out.println("Not Found obstacle place " + i);
 					theLowestPick = i -1;
 					found = true;
 					break;
 				}
 			}
 			if (!found){
+				System.out.println("Found obstacle place");
 				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
 			}
@@ -175,25 +179,23 @@ public class StripsAPI {
 		int closestTopObstacleY = theHighestPick;
 		int closestBottomObstacleY = theLowestPick;
 		
-		if(actionName == Action.MOVE_LEFT && obstacle.getX1() == currentRoom.getX1()){
-			return null; //TODO 
-		}
-		if(actionName == Action.MOVE_RIGHT && obstacle.getX2() == currentRoom.getX2()){
-			return null; //TODO 
-		}
-		RecInfo tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
-		while (tempRec != null){
-			if(tempRec.getY1() - theHighestPick >= obstacle.getEdge2() + 1){
-				return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor, 
-															theHighestPick, theHighestPick + obstacle.getEdge2());
+		if(!(actionName == Action.MOVE_LEFT && obstacle.getX1() == currentRoom.getX1()) 
+				&& !(actionName == Action.MOVE_RIGHT && obstacle.getX2() == currentRoom.getX2())){
+			RecInfo tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
+			while (tempRec != null){
+				if(tempRec.getY1() - theHighestPick >= obstacle.getEdge2() + 1){
+					return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor, 
+																theHighestPick, theHighestPick + obstacle.getEdge2());
+				}
+				theHighestPick = tempRec.getY2()+1;
+				tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
 			}
-			theHighestPick = tempRec.getY2()+1;
-			tempRec = game.getRectangleByYAxis(searchLocation, theHighestPick, theLowestPick);
+			if(theHighestPick+obstacle.getEdge2() <= theLowestPick){
+				return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor,
+															theHighestPick, theHighestPick+obstacle.getEdge2());
+			}
 		}
-		if(theHighestPick+obstacle.getEdge2() <= theLowestPick){
-			return new RecInfo(obstacle.getX1() + additionalFactor, obstacle.getX2() + additionalFactor,
-														theHighestPick, theHighestPick+obstacle.getEdge2());
-		}
+		
 		if(distanceToTopWall >= distanceToBottomWall){
 			if(distanceToTopWall >= obstacle.getEdge2() + 1){
 				new RecInfo(obstacle.getX1(), obstacle.getX2(), 
@@ -219,6 +221,7 @@ public class StripsAPI {
 	private RecInfo findTempObstaclePlaceUpDown(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
+		System.out.println("Obstacle up down");
 		
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToRightWall = currentRoom.getX2() - rect.getX2();
@@ -289,27 +292,24 @@ public class StripsAPI {
 			}
 		}
 		
-		if(actionName == Action.MOVE_UP && obstacle.getY1() == currentRoom.getY1()){
-			return null; //TODO 
-		}
-		if(actionName == Action.MOVE_DOWN && obstacle.getY2() == currentRoom.getY2()){
-			return null; //TODO 
-		}
-		
-		
-		RecInfo tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
-		while (tempRec != null){
-			if(tempRec.getX1() - theMostLeftPick >= obstacle.getEdge1() + 1){
-				return new RecInfo(theMostLeftPick, theMostLeftPick+obstacle.getEdge1(), 
+		if(!(actionName == Action.MOVE_UP && obstacle.getY1() == currentRoom.getY1())
+				&& !(actionName == Action.MOVE_DOWN && obstacle.getY2() == currentRoom.getY2())){
+			RecInfo tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
+			while (tempRec != null){
+				if(tempRec.getX1() - theMostLeftPick >= obstacle.getEdge1() + 1){
+					return new RecInfo(theMostLeftPick, theMostLeftPick+obstacle.getEdge1(), 
+							obstacle.getY1()+additionalFactor, obstacle.getY2()+additionalFactor);
+				}
+				theMostLeftPick = tempRec.getX2()+1;
+				tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
+			}
+			if(theMostLeftPick+obstacle.getEdge1() <= theMostRightPick){
+				return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(),
 						obstacle.getY1()+additionalFactor, obstacle.getY2()+additionalFactor);
 			}
-			theMostLeftPick = tempRec.getX2()+1;
-			tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
 		}
-		if(theMostLeftPick+obstacle.getEdge1() <= theMostRightPick){
-			return new RecInfo(theMostLeftPick,theMostLeftPick+obstacle.getEdge1(),
-					obstacle.getY1()+additionalFactor, obstacle.getY2()+additionalFactor);
-		}
+		
+		
 		if(distanceToLeftWall >= distanceToRightWall){
 			if(distanceToLeftWall >= obstacle.getEdge1() + 1){
 				new RecInfo(rect.getX1() - obstacle.getEdge1()-1, rect.getX1()-1,
@@ -330,6 +330,7 @@ public class StripsAPI {
 	public RecInfo findTempObstaclePlace(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
+		System.out.println("Find Temp Obstacle Function");
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToWall;
 		
