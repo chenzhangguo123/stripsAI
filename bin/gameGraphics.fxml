@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane id="board" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="641.0" prefWidth="1295.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GameGraphics">
+<Pane id="board" fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="641.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GameGraphics">
    <children>
 	  <Group layoutX="49.0" layoutY="67.0">
          <children>
@@ -112,16 +112,18 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Text fx:id="movesMade" layoutX="26.0" layoutY="507.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="180.515625" />
       <Text layoutX="26.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current" />
       <Text layoutX="697.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="What you want" />
       <Button fx:id="simBegin" contentDisplay="RIGHT" defaultButton="true" graphicTextGap="0.0" layoutX="603.0" layoutY="284.0" mnemonicParsing="false" onAction="#startSim" prefHeight="72.0" prefWidth="89.0" text="Begin &#10;Simulation" textAlignment="CENTER">
          <font>
             <Font name="Guttman Aharoni" size="14.0" />
          </font></Button>
-      <Button fx:id="help" layoutX="1221.0" layoutY="14.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="60.0" text="?" textAlignment="CENTER">
+      <Button fx:id="help" layoutX="1215.0" layoutY="14.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="66.0" text="?" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="28.0" />
          </font></Button>
+      <Button fx:id="showStack" layoutX="1137.0" layoutY="14.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="66.0" text="Show &#10;Stack" textAlignment="CENTER" />
+      <Text layoutX="1030.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MS per move" />
+      <TextField fx:id="msMove" layoutX="1030.0" layoutY="32.0" prefHeight="33.0" prefWidth="66.0"/>
    </children>
 </Pane>

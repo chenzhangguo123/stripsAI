@@ -75,7 +75,7 @@ public class StripsEngine {
 				if(currentGoal == currentProblem){
 					problemStack.pop();
 				}
-				goalStack.pop();
+				popFromGoalStack();
 			}else{
 				switch(currentGoal.getName()){
 					/* If the new Goal is IN_PLACE type and it is not satisfied,
@@ -102,23 +102,23 @@ public class StripsEngine {
 						Condition newGoal = new Condition(api,
 												Condition.IS_TO_THE_LEFT,
 														  furniture,false);
-						goalStack.push(newGoal);
+						pushToGoalStack(newGoal);
 						newGoal = new Condition(api,
 												Condition.IS_TO_THE_RIGHT,
 														  furniture,false);
-						goalStack.push(newGoal);
+						pushToGoalStack(newGoal);
 						newGoal = new Condition(api,
 												Condition.IS_LOWER,
 														  furniture,false);
-						goalStack.push(newGoal);	
+						pushToGoalStack(newGoal);	
 						newGoal = new Condition(api,
 												Condition.IS_HIGHER,
 														  furniture,false);
-						goalStack.push(newGoal);
+						pushToGoalStack(newGoal);
 						newGoal = new Condition(api,
 														  Condition.ROTATED,
 														  furniture,false);
-						goalStack.push(newGoal);						
+						pushToGoalStack(newGoal);						
 						RecInfo targed = furniture.get(1);
 						RecInfo desiredRoom = api.getRoom(targed);
 						ArrayList<RecInfo> args = new ArrayList<RecInfo>();
@@ -127,7 +127,7 @@ public class StripsEngine {
 						newGoal = new Condition(api,
 												Condition.IN_SPACE,
 														  args,true);	
-						goalStack.push(newGoal);			
+						pushToGoalStack(newGoal);			
 						break;
 
 					/* If we reach the following cases, it means we try to  
@@ -213,7 +213,7 @@ public class StripsEngine {
         	Condition newGoal = new Condition(api,
         									  Condition.IN_PLACE,
         									  args,true);
-        	goalStack.push(newGoal);
+        	pushToGoalStack(newGoal);
         	problemStack.push(newGoal);
       	}		
 	}
@@ -246,19 +246,19 @@ public class StripsEngine {
 		args.add(targedDoorway);
 		Condition newGoal = new Condition(api,
 										Condition.IS_TO_THE_LEFT,args,false);
-		goalStack.push(newGoal);
+		pushToGoalStack(newGoal);
 		newGoal = new Condition(api,Condition.IS_TO_THE_RIGHT,args,false);
-		goalStack.push(newGoal);
+		pushToGoalStack(newGoal);
 		newGoal = new Condition(api,Condition.IS_LOWER,args,false);
-		goalStack.push(newGoal);	
+		pushToGoalStack(newGoal);	
 		newGoal = new Condition(api,Condition.IS_HIGHER,args,false);
-		goalStack.push(newGoal);
+		pushToGoalStack(newGoal);
 
 		args = new ArrayList<RecInfo>();
 		args.add(source);
 		args.add(currentDoorway);
 		newGoal = new Condition(api,Condition.IN_PLACE,args,true);
-		goalStack.push(newGoal);
+		pushToGoalStack(newGoal);
 	}
 
 	/** Helper method for Solve()
@@ -326,14 +326,14 @@ public class StripsEngine {
 			newGoal = new Condition(api,
 											  Condition.IN_PLACE,
 											  args,true);
-			goalStack.push(newGoal);
+			pushToGoalStack(newGoal);
 			args = new ArrayList<RecInfo>();
 			args.add(source);
 			args.add(targed);
 			newGoal = new Condition(api,
 											  Condition.IN_PLACE,
 											  args,true);
-			goalStack.push(newGoal);
+			pushToGoalStack(newGoal);
 		}
 
 		args = new ArrayList<RecInfo>();
@@ -342,10 +342,11 @@ public class StripsEngine {
 		newGoal = new Condition(api,
 										  Condition.IN_PLACE,
 										  args,true);
-		goalStack.push(newGoal);
+		pushToGoalStack(newGoal);
 	}
 
 	private void printPlan(){
+		game.showPlanList(plan);
 		for(Action action : plan){
 			System.out.println(action.toString());
 		}
@@ -399,13 +400,13 @@ public class StripsEngine {
 				if(api.IsHigher(source,targed) && api.CanMoveDown(source)){
 					newGoal = new Condition(api,Condition.IS_HIGHER,
 													  args,false);
-					goalStack.push(newGoal);
+					pushToGoalStack(newGoal);
 					return true;
 				}
 				if(api.IsLower(source,targed) && api.CanMoveUp(source)){
 					newGoal = new Condition(api,Condition.IS_LOWER,
 													  args,false);
-					goalStack.push(newGoal);
+					pushToGoalStack(newGoal);
 					return true;
 				}		
 				break;		
@@ -414,13 +415,13 @@ public class StripsEngine {
 				if(api.IsToTheLeft(source,targed) && api.CanMoveRight(source)){
 					newGoal = new Condition(api,Condition.IS_TO_THE_LEFT,
 													  args,false);
-					goalStack.push(newGoal);
+					pushToGoalStack(newGoal);
 					return true;
 				}
 				if(api.IsToTheRight(source,targed) && api.CanMoveLeft(source)){
 					newGoal = new Condition(api,Condition.IS_TO_THE_RIGHT,
 													  args,false);
-					goalStack.push(newGoal);
+					pushToGoalStack(newGoal);
 					return true;
 				}					
 				break;
@@ -430,6 +431,16 @@ public class StripsEngine {
 		return false;
 	}
 
+	private void pushToGoalStack(Condition newGoal){
+		goalStack.push(newGoal);
+		game.PushToGraphicStack(newGoal.toString());
+	}
+	
+	private void popFromGoalStack(){
+		goalStack.pop();
+		game.PopFromGraphicStack();
+	}
+	
 	private static void debugPrint(int debugLevel, String debugText){
 		if(debugLevel == CURRENT_DEBUG_LEVEL || CURRENT_DEBUG_LEVEL == DEBUG_ALL){
 			System.out.println("Debug print: "+DEBUG_TAG);

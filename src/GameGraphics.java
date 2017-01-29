@@ -10,6 +10,9 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 
 import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +20,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -51,22 +57,47 @@ public class GameGraphics implements Initializable{
     
     boolean locked=false;
     
-    @FXML
-    private Text movesMade;
+//    @FXML
+//    private Text movesMade;
 
     @FXML
     private Button simBegin;
     
     @FXML
     private Button help;
+
+    @FXML
+    private Button showStack;
     
     @FXML
     private GridPane board1;
 
     @FXML
-    private GridPane board2;      
+    private GridPane board2;
     
-    //Threading - nneded to view every move and not only the final result
+    //Showing the stack (HW2_v2)
+    private Stack<Text> logicStack = new Stack<>();
+	private ListProperty<Text> graphicStack = new SimpleListProperty<>(FXCollections.observableList(logicStack)); 
+		
+	private ListView<Text> movesMade;
+    private Scene stackScene;
+    private Stage stackStage;
+    
+    //Showing the final plan
+    private ArrayList<Text> planList = new ArrayList<Text>();
+	private ListProperty<Text> graphicPlanList = new SimpleListProperty<>(FXCollections.observableList(planList));
+    private ListView<Text> planListView;
+    private Scene planListScene;
+    private Stage planListStage;
+    
+
+    //Timing
+    private long msPerMove;
+    
+    @FXML 
+    private TextField msMove;
+    
+    //Threading - needed to view every move and not only the final result
     public Thread solveThread;
     public Task<Void> solveTask;
 
@@ -76,7 +107,12 @@ public class GameGraphics implements Initializable{
 	final static double sizePre=0.99;
 
     //Time between each move in milliseconds
-    private static final long MS = 100;
+    private static final long GRAPHIC_STACK_MS = 50;
+    private static final long MS = 1000 - GRAPHIC_STACK_MS;
+    
+    //graphic stack size:
+    private static final double GRAPHIC_STACK_H = 700;
+    private static final double GRAPHIC_STACK_W = 400;
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
@@ -205,12 +241,44 @@ public class GameGraphics implements Initializable{
 			} catch (Exception ex) {}
     		
         });
+
+       	// The graphic stack code:
+			movesMade=new ListView<>();
+			movesMade.itemsProperty().bind(graphicStack);
+			movesMade.setRotate(180);
+			stackStage = new Stage();
+			stackStage.setHeight(GRAPHIC_STACK_H);
+            stackStage.setWidth(GRAPHIC_STACK_W);
+			stackStage.setTitle("Stack");
+			stackStage.initModality(Modality.NONE);
+			stackScene = new Scene(movesMade);
+			stackStage.setOnCloseRequest(r->stackStage.hide());
+			stackStage.setScene(stackScene);
+			showStack.setOnAction(a->showGraphicStack());
+			// the graphic stack code       	
+
+            //The planList code
+            planListView=new ListView<>();
+            planListView.itemsProperty().bind(graphicPlanList);
+            planListStage = new Stage();
+            planListStage.setHeight(GRAPHIC_STACK_H);
+            planListStage.setWidth(GRAPHIC_STACK_W);
+            planListStage.setTitle("Final Plan");
+            planListStage.initModality(Modality.NONE);
+            planListScene = new Scene(planListView);
+            planListStage.setOnCloseRequest(r->planListStage.hide());
+            planListStage.setScene(planListScene);
+//            showStack.setOnAction(a->planListStage.show());
+            // the graphic planList code
+
+            msPerMove = MS;
     }
 
 /* ---------------------------- Start Simulator ---------------------------- */  
     @FXML
     private void startSim() {
     	GameGraphics game = this;
+    	initTiming();
 		System.out.println("started");
 		printFurnitureLists();
 		StripsEngine engine = new StripsEngine(game);
@@ -222,6 +290,8 @@ public class GameGraphics implements Initializable{
                 return null;
             }
         };
+        logicStack.clear();
+        graphicStack.clear();
         solveThread = new Thread(solveTask);
         solveThread.setDaemon(true);
         solveThread.start();
@@ -311,9 +381,87 @@ public class GameGraphics implements Initializable{
     	}
     	return info;
     }
+
+
+	//adds a string to the stack
+	public void PushToGraphicStack(String str) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {	
+				Text t=new Text(str);
+				t.setRotate(180);
+				graphicStack.add(t);
+                logicStack.push(t);
+	        }
+	    });
+        try {
+            Thread.sleep(GRAPHIC_STACK_MS);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	}
+
+	//removes the first string from the stack
+	public void PopFromGraphicStack() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if(!logicStack.empty()){
+					graphicStack.remove(logicStack.peek());
+					logicStack.pop();
+				}
+	        }
+	    });		
+        try {
+            Thread.sleep(GRAPHIC_STACK_MS);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }				
+	}
     
+    public void showPlanList(ArrayList<Action> plan){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+            	planList.clear();
+            	graphicPlanList.clear();
+                for(Action action : plan){
+                    Text t=new Text(action.toString());
+                    planList.add(t);
+                    graphicPlanList.add(t);
+                }
+                planListStage.show();
+            }
+        });     
+    }
+
 /* ---------------------------- Private Methods ---------------------------- */
 
+    private void initTiming(){
+        String textFeild = msMove.getText();
+        if(textFeild != ""){
+            long num = Long.parseLong(textFeild);
+            if(num>GRAPHIC_STACK_MS){
+                msPerMove = num - GRAPHIC_STACK_MS;
+            }else{
+            	msPerMove = num;
+            }
+        }else{
+            msPerMove = MS;
+        }
+    }
+
+    private void showGraphicStack(){
+    	stackStage.show();
+    	stackStage.setAlwaysOnTop(true);
+    }
+    
+    private void hideGraphicStack(){
+    	stackStage.hide();
+    }
+    
 	private boolean legalPlace(int x1, int x2, int y1, int y2, boolean isBoard1) {
 		List<MyRec> tFur=null;
 		if(isBoard1)
@@ -556,12 +704,6 @@ public class GameGraphics implements Initializable{
 	}
 
     private void makeMove(MyRec rectangle){
-//		 try {
-// 		 	TimeUnit.MILLISECONDS.sleep(MS);
-// 		 } catch (InterruptedException e) {
-// 		 	// TODO Auto-generated catch block
-// 		 	e.printStackTrace();
-// 		 }
 	      Platform.runLater(new Runnable() {
 	          @Override
 	          public void run() {
@@ -583,7 +725,7 @@ public class GameGraphics implements Initializable{
 	          }
 	        });
 	    	try {
-				Thread.sleep(MS);
+				Thread.sleep(msPerMove);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -172,7 +172,7 @@ public class RecInfo {
 
 	@Override
 	public String toString(){
-		return "(" + x1 + "," + x2 + "," + y1 + "," + y2 + ")" + id;
+		return "[" + x1 + "," + x2 + "," + y1 + "," + y2 + "]";
 	}
 	
 /* ---------------------------- Private Methods ---------------------------- */

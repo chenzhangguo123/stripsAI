@@ -12,12 +12,12 @@ public class Global {
 
 /* ---------------------------- Constant Values ---------------------------- */
 
-	// Assertions
-	private static final boolean ENABLE_ASSERT = true;
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
 	public static final boolean ENABLE_DEBUG = true;
+	// Assertions
+	private static final boolean ENABLE_ASSERT = true;
 
 /* ---------------------------- Object Construction ------------------------ */
 
