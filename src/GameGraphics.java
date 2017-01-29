@@ -76,7 +76,7 @@ public class GameGraphics implements Initializable{
 	final static double sizePre=0.99;
 
     //Time between each move in milliseconds
-    private static final long MS = 200;
+    private static final long MS = 100;
 
 /* ---------------------------- DEBUG Environment -------------------------- */
 
@@ -86,7 +86,7 @@ public class GameGraphics implements Initializable{
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
 	private static final int DEBUG_NONE = -1;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_NONE;
 
 /* --------------------------- Graphics Initialize ------------------------- */    
     @Override

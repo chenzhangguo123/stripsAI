@@ -796,7 +796,7 @@ public class StripsAPI {
 		
 		return false;
 		
-	} // rect can move one step up
+	} 
 	
 	/**
 	 * @param
