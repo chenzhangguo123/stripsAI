@@ -135,29 +135,35 @@ public class StripsEngine {
 					 * see handleObstacleCase() bellow
 					 */
 					case Condition.CAN_MOVE_UP:
+						popFromGoalStack();
 						if (!canAvoidObstacle(Action.MOVE_UP)) {
 							handleObstacleCase(Action.MOVE_UP);	
 						}
 						break;
 					case Condition.CAN_MOVE_DOWN:
+						popFromGoalStack();
 						if (!canAvoidObstacle(Action.MOVE_DOWN)) {
 							handleObstacleCase(Action.MOVE_DOWN);
 						}
 						break;
 					case Condition.CAN_MOVE_LEFT:
+						popFromGoalStack();
 						if (!canAvoidObstacle(Action.MOVE_LEFT)) {
 							handleObstacleCase(Action.MOVE_LEFT);
 						}
 						break;
 					case Condition.CAN_MOVE_RIGHT:
+						popFromGoalStack();
 						if(!canAvoidObstacle(Action.MOVE_RIGHT)){
 							handleObstacleCase(Action.MOVE_RIGHT);
 						}
 						break;
 					case Condition.CAN_ROTATE_RIGHT:
+						popFromGoalStack();
 						handleObstacleCase(Action.ROTATE_RIGHT);
 						break;
 					case Condition.CAN_ROTATE_LEFT:
+						popFromGoalStack();
 						handleObstacleCase(Action.ROTATE_LEFT);
 						break;
 					case Condition.IN_SPACE: 
@@ -304,10 +310,34 @@ public class StripsEngine {
 	 */	
 	private void handleObstacleCase(String action){
 		Condition currentProblem = problemStack.peek();
+		Condition currentGoal = goalStack.peek();
+		ArrayList<RecInfo> args;
+		Condition newGoal;
 		RecInfo source = currentProblem.getArgs().get(0);
 		RecInfo targed = currentProblem.getArgs().get(1);
 		RecInfo obstacle = api.getObstacle(source,
 										action);
+		//Rotation and walls case
+		if(currentGoal.getName() == Condition.ROTATED && obstacle == null){
+			RecInfo tmpRotationPlace = null;
+			if(action == Action.ROTATE_LEFT){
+				tmpRotationPlace = api.findPlaceForRotationLeft(source);
+			}else{
+				tmpRotationPlace = api.findPlaceForRotationRight(source);
+			}
+			if(tmpRotationPlace == null){
+				Global.InvokeAssert(true,"Engine: ERROR! tmpRotationPlace is null");
+			}
+			args = new ArrayList<RecInfo>();
+			args.add(source);
+			args.add(tmpRotationPlace);
+			newGoal = new Condition(api,
+											  Condition.IN_PLACE,
+											  args,true);
+			pushToGoalStack(newGoal);
+			return;
+		} // Rotation and walls case
+
 		debugPrint(DEBUG_SPECIFIC,"getObstacle returned "+obstacle);
 		RecInfo oldObstaclePlace = obstacle.copy();
 		oldObstaclePlace.setDummy();
@@ -315,8 +345,6 @@ public class StripsEngine {
 										obstacle,
 										action);
 		debugPrint(DEBUG_SPECIFIC,"findTempObstaclePlace returned "+tmpPlace);
-		ArrayList<RecInfo> args;
-		Condition newGoal;
 		boolean needToReturnObstacle = doWeneedToReturnObstacle(oldObstaclePlace,obstacle);
 
 		if(needToReturnObstacle){
@@ -385,6 +413,13 @@ public class StripsEngine {
 		return false;
 	}
 
+	/**
+	 * This method will run in case something (an obstacle) is preventing 
+	 * us to move in a certain direction, but we want to avoid touching it and 
+	 * instead check other options for us to move.
+	 * @param : Action, witch specifies the direction we want to move in
+	 * @return : true if we can avoid the obstacle, else false
+	 */
 	private boolean canAvoidObstacle(String action){
 		Condition currentProblem = problemStack.peek();
 		Condition currentGoal = goalStack.peek();

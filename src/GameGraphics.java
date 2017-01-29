@@ -249,7 +249,7 @@ public class GameGraphics implements Initializable{
 			stackStage = new Stage();
 			stackStage.setHeight(GRAPHIC_STACK_H);
             stackStage.setWidth(GRAPHIC_STACK_W);
-			stackStage.setTitle("Stack");
+			stackStage.setTitle("Goal Stack");
 			stackStage.initModality(Modality.NONE);
 			stackScene = new Scene(movesMade);
 			stackStage.setOnCloseRequest(r->stackStage.hide());
@@ -442,11 +442,19 @@ public class GameGraphics implements Initializable{
     private void initTiming(){
         String textFeild = msMove.getText();
         if(textFeild != ""){
-            long num = Long.parseLong(textFeild);
+        	long num = MS;
+            try {
+            	num = Long.parseLong(textFeild);
+            } catch (NumberFormatException e) {
+                // TODO Auto-generated catch block
+                msPerMove = MS;            	
+                e.printStackTrace();
+                return;
+            }
             if(num>GRAPHIC_STACK_MS){
                 msPerMove = num - GRAPHIC_STACK_MS;
             }else{
-            	msPerMove = num;
+            	msPerMove = GRAPHIC_STACK_MS;
             }
         }else{
             msPerMove = MS;
