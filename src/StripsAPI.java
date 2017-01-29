@@ -720,6 +720,70 @@ public class StripsAPI {
 		return false;
 	}
 	
+	public RecInfo findPlaceForRotationLeft(RecInfo rect){
+		int edge1 = rect.getEdge1();
+		int edge2 = rect.getEdge2();
+		int x1 = rect.getX1();
+		int x2 = rect.getX2();
+		int y1 = rect.getY1();
+		int y2 = rect.getY2();
+		
+		RecInfo room = getRoom(rect);
+		
+		double sqrt = Math.sqrt( 
+				   Math.pow(edge1+1,2)
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
+		int heightNeeded = round - y2 -1;
+		int widthNeeded = edge2 - (x1-room.getX1()) + 1;
+		if(heightNeeded < 0) heightNeeded = 0;
+		if(widthNeeded < 0) widthNeeded = 0;
+		
+		RecInfo temp = new RecInfo(x1+widthNeeded, x2+widthNeeded, y1+heightNeeded, y2+heightNeeded);
+		if(notEncountersWalls(temp))
+			return temp;
+		return null;
+	}
+	
+	public RecInfo findPlaceForRotationRight(RecInfo rect){
+		int edge1 = rect.getEdge1();
+		int edge2 = rect.getEdge2();
+		int x1 = rect.getX1();
+		int x2 = rect.getX2();
+		int y1 = rect.getY1();
+		int y2 = rect.getY2();
+		
+		RecInfo room = getRoom(rect);
+		
+		double sqrt = Math.sqrt( 
+				   Math.pow(edge1+1,2)
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
+		int heightNeeded = round - y2 -1;
+		int widthNeeded = edge2 - (room.getX2() - x2) + 1;
+		if(heightNeeded < 0) heightNeeded = 0;
+		if(widthNeeded < 0) widthNeeded = 0;
+		
+		RecInfo temp = new RecInfo(x1-widthNeeded, x2-widthNeeded, y1+heightNeeded, y2+heightNeeded);
+		if(notEncountersWalls(temp))
+			return temp;
+		return null;
+	}
+	
 	
 	/************************************************************************ 
 	 *   In our implementation of STRIPS, We use a set of Conditions and 	*
