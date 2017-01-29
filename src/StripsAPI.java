@@ -720,6 +720,47 @@ public class StripsAPI {
 		return false;
 	}
 	
+	public boolean isFitInDoorway(RecInfo source, RecInfo targetRoom){
+		RecInfo currentRoom = getRoom(source);
+		int edge1 = source.getEdge1();
+		int edge2 = source.getEdge2();
+		
+		if((currentRoom == ROOM1 && targetRoom == ROOM3) ||
+				(currentRoom == ROOM3 && targetRoom == ROOM1)){
+			if(edge1 > DOORWAY_ROOMS13.getEdge2() && edge2 > DOORWAY_ROOMS13.getEdge2()) return false;
+			return true;
+		}
+		if((currentRoom == ROOM2 && targetRoom == ROOM3) ||
+				(currentRoom == ROOM3 && targetRoom == ROOM2)){
+			if(edge1 > DOORWAY_ROOMS23.getEdge2() && edge2 > DOORWAY_ROOMS23.getEdge2()) return false;
+			return true;
+		}
+		if((currentRoom == ROOM2 && targetRoom == ROOM1) ||
+				(currentRoom == ROOM1 && targetRoom == ROOM2)){
+			if(edge1 > DOORWAY_ROOMS12.getEdge1() && edge2 > DOORWAY_ROOMS12.getEdge1()) return false;
+			return true;
+		}
+		return false;
+	}
+	
+	public RecInfo getAlternativeRoom(RecInfo source, RecInfo targetRoom){
+		RecInfo currentRoom = getRoom(source);
+		if((currentRoom == ROOM1 && targetRoom == ROOM3) ||
+				(currentRoom == ROOM3 && targetRoom == ROOM1)){
+			return ROOM2;
+		}
+		if((currentRoom == ROOM2 && targetRoom == ROOM3) ||
+				(currentRoom == ROOM3 && targetRoom == ROOM2)){
+			return ROOM1;
+		}
+		if((currentRoom == ROOM2 && targetRoom == ROOM1) ||
+				(currentRoom == ROOM1 && targetRoom == ROOM2)){
+			return ROOM3;
+		}
+		return null;
+	}
+	
+	
 	public RecInfo findPlaceForRotationLeft(RecInfo rect){
 		int edge1 = rect.getEdge1();
 		int edge2 = rect.getEdge2();
