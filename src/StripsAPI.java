@@ -87,7 +87,6 @@ public class StripsAPI {
 			case Action.MOVE_DOWN:
 				return game.getRectangleByXAxis(x1, x2, y2+1);
 			case Action.ROTATE_LEFT:
-				System.out.println("Rotate Left");
 				for(int i = x1-1-edge2; i <= x1-1; i++){
 					info = game.getRectangleByYAxis(i, y2-maxLength+1, y2);
 					if(info != null){
@@ -103,7 +102,6 @@ public class StripsAPI {
 				debugPrint(DEBUG_SPECIFIC,"Null Pointer Received");
 				return null;
 			case Action.ROTATE_RIGHT:
-				System.out.println("Rotate Right");
 				for(int i = x2+1; i <= x2+1+edge2; i++){
 					info = game.getRectangleByYAxis(i, y2-maxLength+1, y2);
 					if(info != null){
@@ -131,7 +129,7 @@ public class StripsAPI {
 	private RecInfo findTempObstaclePlaceMovingAside(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
-		System.out.println("Obstacle aside");
+
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToBottomWall = currentRoom.getY2() - rect.getY2();
 		int distanceToTopWall = rect.getY1() - currentRoom.getY1();
@@ -152,17 +150,14 @@ public class StripsAPI {
 		}
 		
 		if (distanceToBottomWall >= obstacle.getEdge2()+1){
-			System.out.println("Checking down");
 			for(int i = obstacle.getY2()+1; i <= rect.getY2()+obstacle.getEdge2()+1; i++){
 				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-					System.out.println("Not Found obstacle place " + i);
 					theLowestPick = i -1;
 					found = true;
 					break;
 				}
 			}
 			if (!found){
-				System.out.println("Found obstacle place");
 				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY2() + 1, rect.getY2()+obstacle.getEdge2()+1);
 			}
@@ -222,19 +217,12 @@ public class StripsAPI {
 		}
 		
 		if(distanceToTopWall >= distanceToBottomWall){
-			System.out.println("Distance to top wall is greater");
-			System.out.println("Distance to wall is " + distanceToTopWall 
-					+ " obstacle length " + (obstacle.getEdge2() + 1));
 			if(distanceToTopWall >= obstacle.getEdge2() + 1){
-				System.out.println("before returnig, obstacle is not null");
 				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY1() - obstacle.getEdge2() - 1, rect.getY1()-1);
 			}
 		}
 		else{ 
-			System.out.println("Distance to top wall is greater");
-			System.out.println("Distance to wall is " + distanceToTopWall 
-					+ " obstacle length " + (obstacle.getEdge2() + 1));
 			if(distanceToBottomWall >= obstacle.getEdge2() + 1){
 				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY2() + 1, rect.getY2()+ 1 + obstacle.getEdge2());
@@ -253,7 +241,6 @@ public class StripsAPI {
 	private RecInfo findTempObstaclePlaceUpDown(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
-		System.out.println("Obstacle up down");
 		
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToRightWall = currentRoom.getX2() - rect.getX2();
@@ -276,7 +263,6 @@ public class StripsAPI {
 		}
 		
 		if (distanceToRightWall >= obstacle.getEdge1()+1){
-			System.out.println("Distance to right wall");
 			for(int i = obstacle.getX2()+1; i <= rect.getX2()+obstacle.getEdge1()+1; i++){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostRightPick = i -1;
@@ -302,7 +288,6 @@ public class StripsAPI {
 
 
 		if (distanceToLeftWall >= obstacle.getEdge1()+1){
-			System.out.println("Distance to left wall");
 			for(int i = obstacle.getX1()-1; i >= rect.getX1()-obstacle.getEdge1()-1; i--){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostLeftPick = i + 1;
@@ -328,7 +313,6 @@ public class StripsAPI {
 		
 		if(!(actionName == Action.MOVE_UP && obstacle.getY1() == currentRoom.getY1())
 				&& !(actionName == Action.MOVE_DOWN && obstacle.getY2() == currentRoom.getY2())){
-			System.out.println("up or down");
 			RecInfo tempRec = game.getRectangleByXAxis(theMostLeftPick, theMostRightPick, searchLocation);
 			while (tempRec != null){
 				if(tempRec.getX1() - theMostLeftPick >= obstacle.getEdge1() + 1){
@@ -346,18 +330,12 @@ public class StripsAPI {
 		
 		
 		if(distanceToLeftWall >= distanceToRightWall){
-			System.out.println("Distance to left wall is greater");
-			System.out.println("Distance to wall is " + distanceToLeftWall 
-					+ " obstacle length " + (obstacle.getEdge1() + 1));
 			if(distanceToLeftWall >= obstacle.getEdge1() + 1){
 				return new RecInfo(rect.getX1() - obstacle.getEdge1()-1, rect.getX1()-1,
 											obstacle.getY1(), obstacle.getY2());
 			}
 		}
 		else if(distanceToRightWall >= obstacle.getEdge1() + 1){
-			System.out.println("Distance to right wall is greater");
-			System.out.println("Distance to wall is " + distanceToRightWall 
-					+ " obstacle length " + (obstacle.getEdge1() + 1));
 			return new RecInfo(rect.getX2() +1, rect.getX2() + obstacle.getEdge1() + 1, 
 					obstacle.getY1(), obstacle.getY2());
 			}
@@ -369,10 +347,8 @@ public class StripsAPI {
 		     												RecInfo obstacle){
 		int theLowestPick = obstacle.getY2();
 		if (distanceToBottomWall >= obstacle.getEdge2()+1){
-			System.out.println("Checking down");
 			for(int i = obstacle.getY2()+1; i <= rect.getY2()+obstacle.getEdge2()+1; i++){
 				if (game.getRectangleByXAxis(obstacle.getX1(), obstacle.getX2(), i) != null){
-					System.out.println("Not Found obstacle place " + i);
 					theLowestPick = i -1;
 					break;
 				}
@@ -418,7 +394,6 @@ public class StripsAPI {
 	private RecInfo findTempObstaclePlaceRotations(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
-		System.out.println("Obstacle rotations");
 		RecInfo currentRoom = getRoom(rect);
 		int distanceToBottomWall = currentRoom.getY2() - rect.getY2();
 		int distanceToTopWall;
@@ -481,19 +456,12 @@ public class StripsAPI {
 				}
 				
 			if(distanceToTopWall >= distanceToBottomWall){
-			System.out.println("Distance to top wall is greater");
-			System.out.println("Distance to wall is " + distanceToTopWall 
-					+ " obstacle length " + (obstacle.getEdge2() + 1));
 			if(distanceToTopWall >= obstacle.getEdge2() + 1){
-				System.out.println("before returnig, obstacle is not null");
 				return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 						rect.getY1() - obstacle.getEdge2() - 1, rect.getY1()-1);
 				}	
 			}
 			else{ 
-				System.out.println("Distance to top wall is greater");
-				System.out.println("Distance to wall is " + distanceToTopWall 
-						+ " obstacle length " + (obstacle.getEdge2() + 1));
 				if(distanceToBottomWall >= obstacle.getEdge2() + 1){
 					return new RecInfo(obstacle.getX1(), obstacle.getX2(), 
 							rect.getY2() + 1, rect.getY2()+ 1 + obstacle.getEdge2());
@@ -525,7 +493,6 @@ public class StripsAPI {
 			int theMostLeftPick = obstacle.getX1();
 			
 			if (distanceToRightWall >= obstacle.getEdge1()+1){
-			System.out.println("Distance to right wall");
 			for(int i = obstacle.getX2()+1; i <= rightLimit; i++){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostRightPick = i -1;
@@ -551,7 +518,6 @@ public class StripsAPI {
 
 
 		if (distanceToLeftWall >= obstacle.getEdge1()+1){
-			System.out.println("Distance to left wall");
 			for(int i = obstacle.getX1()-1; i >= leftLimit; i--){
 				if (game.getRectangleByYAxis(i, obstacle.getY1(), obstacle.getY2()) != null){
 					theMostLeftPick = i + 1;
@@ -594,7 +560,6 @@ public class StripsAPI {
 			if(distanceToLeftWall >= distanceToRightWall){
 
 			if(distanceToLeftWall >= obstacle.getEdge1() + 1){
-				System.out.println("before returnig, obstacle is not null");
 				return new RecInfo(leftLimit, leftLimit + obstacle.getEdge1(),
 						obstacle.getY1(), obstacle.getY2());
 				}	
@@ -618,7 +583,6 @@ public class StripsAPI {
 	public RecInfo findTempObstaclePlace(RecInfo rect, 
 									     RecInfo obstacle,
 									     String actionName){
-		System.out.println("Find Temp Obstacle Function");
 			switch(actionName){
 			case Action.MOVE_LEFT:		
 			case Action.MOVE_RIGHT:
@@ -645,9 +609,16 @@ public class StripsAPI {
 	 * 			doorWay(5,7,1,2)
 	 */ 
 	
-	private RecInfo findSpotNearVerticalDoorway(RecInfo door, int edge, int x1, int x2){
+	private RecInfo findSpotNearVerticalDoorway(RecInfo door, int edge, int x1, int x2, int y1, int y2){
 		int counter = -1;
 		for (int i = door.getY1(); i <= door.getY2(); i++){
+			if(i >= y1 && i <= y2) {
+				counter++;
+				if(counter == edge){
+					return new RecInfo(x1,x2, i-edge, i);
+				}
+				continue;
+			}
 			if (game.getRectangleByXAxis(x1, x2, i) != null){
 				counter = -1;
 			}
@@ -662,9 +633,16 @@ public class StripsAPI {
 	}
 	
 	
-	private RecInfo findSpotNearHorizontalDoorway(RecInfo door, int edge, int y1, int y2){
+	private RecInfo findSpotNearHorizontalDoorway(RecInfo door, int edge,int x1, int x2, int y1, int y2){
 		int counter = -1;
 		for (int i = door.getX1(); i <= door.getX2(); i++){
+			if(i >= x1 && i <= x2) {
+				counter++;
+				if(counter == edge){
+					return new RecInfo(i-edge, i, y1,y2);
+				}
+				continue;
+			}
 			if (game.getRectangleByYAxis(i, y1, y2) != null){
 				counter = -1;
 			}
@@ -684,20 +662,23 @@ public class StripsAPI {
 	public RecInfo findSpotNearDorway(RecInfo furniture, RecInfo currentRoom,
 												RecInfo targetRoom){//TO ADD CHECK ALONG THE WALL
 		RecInfo door;
-		int x1, x2, y1, y2;
+		int x1 = furniture.getX1();
+		int x2 = furniture.getX2();
+		int y1 = furniture.getY1();
+		int y2 = furniture.getY2();
 		int counter;
 		if(currentRoom == this.ROOM1 && targetRoom == this.ROOM3){
 			door = this.DOORWAY_ROOMS13;
 			x1 = door.getX1() - furniture.getEdge1() - 1;
 			x2 = door.getX1() - 1;
-			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2, y1, y2);
 		}
 		
 		if(currentRoom == this.ROOM1 && targetRoom == this.ROOM2){
 			door = this.DOORWAY_ROOMS12;
 			y1 = door.getY1() - furniture.getEdge2() - 1;
 			y2 = door.getY1() - 1;
-			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), y1, y2);
+			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), x1, x2, y1, y2);
 		}
 		
 		
@@ -705,7 +686,7 @@ public class StripsAPI {
 			door = this.DOORWAY_ROOMS12;
 			y1 = door.getY2() + 1;
 			y2 = door.getY2() +furniture.getEdge2() + 1;
-			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), y1, y2);
+			return findSpotNearHorizontalDoorway(door, furniture.getEdge1(), x1, x2, y1, y2);
 		}
 		
 		
@@ -714,25 +695,95 @@ public class StripsAPI {
 			door = this.DOORWAY_ROOMS23;
 			x1 = door.getX1() - furniture.getEdge1() - 1;
 			x2 = door.getX1() - 1;
-			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2, y1, y2);
 		}
 		
 		if(currentRoom == this.ROOM3 && targetRoom == this.ROOM1){
 			door = this.DOORWAY_ROOMS13;
 			x1 = door.getX2() + 1; 
 			x2 = door.getX2() + furniture.getEdge1() + 1;
-			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2, y1, y2);
 		}
 		
 		if(currentRoom == this.ROOM3 && targetRoom == this.ROOM2){
 			door = this.DOORWAY_ROOMS23;
 			x1 = door.getX2() + 1; 
 			x2 = door.getX2() + furniture.getEdge1() + 1;
-			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2);
+			return findSpotNearVerticalDoorway(door, furniture.getEdge2(), x1, x2, y1, y2);
 		}
 		return null;
 		
 	}
+	
+	public boolean canMoveToUpperDoor(RecInfo rect){
+		if(rect.getEdge1() < 3 || rect.getEdge2() < 3) return true;
+		return false;
+	}
+	
+	public RecInfo findPlaceForRotationLeft(RecInfo rect){
+		int edge1 = rect.getEdge1();
+		int edge2 = rect.getEdge2();
+		int x1 = rect.getX1();
+		int x2 = rect.getX2();
+		int y1 = rect.getY1();
+		int y2 = rect.getY2();
+		
+		RecInfo room = getRoom(rect);
+		
+		double sqrt = Math.sqrt( 
+				   Math.pow(edge1+1,2)
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
+		int heightNeeded = round - y2 -1;
+		int widthNeeded = edge2 - (x1-room.getX1()) + 1;
+		if(heightNeeded < 0) heightNeeded = 0;
+		if(widthNeeded < 0) widthNeeded = 0;
+		
+		RecInfo temp = new RecInfo(x1+widthNeeded, x2+widthNeeded, y1+heightNeeded, y2+heightNeeded);
+		if(notEncountersWalls(temp))
+			return temp;
+		return null;
+	}
+	
+	public RecInfo findPlaceForRotationRight(RecInfo rect){
+		int edge1 = rect.getEdge1();
+		int edge2 = rect.getEdge2();
+		int x1 = rect.getX1();
+		int x2 = rect.getX2();
+		int y1 = rect.getY1();
+		int y2 = rect.getY2();
+		
+		RecInfo room = getRoom(rect);
+		
+		double sqrt = Math.sqrt( 
+				   Math.pow(edge1+1,2)
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
+		int heightNeeded = round - y2 -1;
+		int widthNeeded = edge2 - (room.getX2() - x2) + 1;
+		if(heightNeeded < 0) heightNeeded = 0;
+		if(widthNeeded < 0) widthNeeded = 0;
+		
+		RecInfo temp = new RecInfo(x1-widthNeeded, x2-widthNeeded, y1+heightNeeded, y2+heightNeeded);
+		if(notEncountersWalls(temp))
+			return temp;
+		return null;
+	}
+	
 	
 	/************************************************************************ 
 	 *   In our implementation of STRIPS, We use a set of Conditions and 	*
@@ -975,11 +1026,18 @@ public class StripsAPI {
 		int newX1 = x2+1;
 		int newX2 = newX1 + edge2;
 		int newY2 = y2;
-		int newY1 = (int) (y2 - Math.round( Math.sqrt( 
+		double sqrt = Math.sqrt( 
 				   Math.pow(edge1+1,2)
-				+  Math.pow(edge2+1,2))));
-		
-
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
+		 
 		if (notEncountersWalls(new RecInfo(newX1, newX2, newY1, newY2)) == false){
 			return false;
 		}
@@ -989,7 +1047,6 @@ public class StripsAPI {
 		}
 		
 		newY2 = y1-1;
-		
 		if (notEncountersWalls(new RecInfo(x1, x2, newY1, newY2)) == false){
 			return false;
 		}
@@ -1019,9 +1076,17 @@ public class StripsAPI {
 
 		
 		int newY2 = y2;
-		int newY1 = (int) (y2 - Math.round( Math.sqrt( 
+		double sqrt = Math.sqrt( 
 				   Math.pow(edge1+1,2)
-				+  Math.pow(edge2+1,2))));
+				+  Math.pow(edge2+1,2));
+		int round;
+		if(sqrt > Math.round(sqrt)){
+			round = (int) (Math.round(sqrt) + 1);
+		}
+		else{
+			round = (int) (Math.round(sqrt));
+		}
+		int newY1 = (int) (y2 - round+1);
 		
 
 		if (notEncountersWalls(new RecInfo(newX1, newX2, newY1, newY2)) == false){
@@ -1033,6 +1098,7 @@ public class StripsAPI {
 		}
 		
 		newY2 = y1-1;
+		
 		
 		if (notEncountersWalls(new RecInfo(x1, x2, newY1, newY2)) == false){
 			return false;
