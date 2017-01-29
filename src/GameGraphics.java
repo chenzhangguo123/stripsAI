@@ -273,10 +273,33 @@ public class GameGraphics implements Initializable{
 
             msPerMove = MS;
     }
+    
+    private boolean checkMatches(){
+    	if(furL.size() != furR.size()) return false;
+    	List<MyRec> rightSideList=new LinkedList<>();
+    	
+    	for(int i = 0; i <furL.size(); i++){
+    		rightSideList.add(furR.get(i));
+    	}
+    	for(MyRec leftRectangle: furL){
+    		for(MyRec rightRectangle : rightSideList){
+    			if(leftRectangle.checkEdges(rightRectangle)){
+    				rightSideList.remove(rightRectangle);
+    				break;
+    			}
+    		}
+    	}
+    	
+    	if(rightSideList.isEmpty()) return true;
+    	return false;
+    	
+    	
+    }
 
 /* ---------------------------- Start Simulator ---------------------------- */  
     @FXML
     private void startSim() {
+    	if (!checkMatches()) return;
     	GameGraphics game = this;
     	initTiming();
 		System.out.println("started");
