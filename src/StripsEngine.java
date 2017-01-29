@@ -33,7 +33,7 @@ public class StripsEngine {
 	private static final int DEBUG_FUNCTION = 2;
 	private static final int DEBUG_SPECIFIC = 3;
 	private static final int DEBUG_NONE = -1;
-	private static final int CURRENT_DEBUG_LEVEL = DEBUG_FUNCTION;
+	private static final int CURRENT_DEBUG_LEVEL = DEBUG_ALL;
 
 
 /* ---------------------------- Object Construction ------------------------ */
@@ -135,35 +135,29 @@ public class StripsEngine {
 					 * see handleObstacleCase() bellow
 					 */
 					case Condition.CAN_MOVE_UP:
-						goalStack.pop();
 						if (!canAvoidObstacle(Action.MOVE_UP)) {
 							handleObstacleCase(Action.MOVE_UP);	
 						}
 						break;
 					case Condition.CAN_MOVE_DOWN:
-						goalStack.pop();					
 						if (!canAvoidObstacle(Action.MOVE_DOWN)) {
 							handleObstacleCase(Action.MOVE_DOWN);
 						}
-						break;					
+						break;
 					case Condition.CAN_MOVE_LEFT:
-						goalStack.pop();					
 						if (!canAvoidObstacle(Action.MOVE_LEFT)) {
 							handleObstacleCase(Action.MOVE_LEFT);
 						}
-						break;						
+						break;
 					case Condition.CAN_MOVE_RIGHT:
-						goalStack.pop();					
 						if(!canAvoidObstacle(Action.MOVE_RIGHT)){
 							handleObstacleCase(Action.MOVE_RIGHT);
 						}
 						break;
 					case Condition.CAN_ROTATE_RIGHT:
-						goalStack.pop();					
 						handleObstacleCase(Action.ROTATE_RIGHT);
 						break;
 					case Condition.CAN_ROTATE_LEFT:
-						goalStack.pop();					
 						handleObstacleCase(Action.ROTATE_LEFT);
 						break;
 					case Condition.IN_SPACE: 
@@ -390,13 +384,6 @@ public class StripsEngine {
 		return false;
 	}
 
-	/**
-	 * This method will run in case something (an obstacle) is preventing 
-	 * us to move in a certain direction, but we want to avoid touching it and 
-	 * instead check other options for us to move.
-	 * @param : Action, witch specifies the direction we want to move in
-	 * @return : true if we can avoid the obstacle, else false
-	 */
 	private boolean canAvoidObstacle(String action){
 		Condition currentProblem = problemStack.peek();
 		Condition currentGoal = goalStack.peek();
@@ -412,15 +399,13 @@ public class StripsEngine {
 				if(api.IsHigher(source,targed) && api.CanMoveDown(source)){
 					newGoal = new Condition(api,Condition.IS_HIGHER,
 													  args,false);
-					// goalStack.pop(); //pop the Old CAN_MOVE_LEFT/RIGHT goal
-					goalStack.push(newGoal); //push the new goal
+					goalStack.push(newGoal);
 					return true;
 				}
 				if(api.IsLower(source,targed) && api.CanMoveUp(source)){
 					newGoal = new Condition(api,Condition.IS_LOWER,
 													  args,false);
-					// goalStack.pop(); //pop the Old CAN_MOVE_LEFT/RIGHT goal
-					goalStack.push(newGoal);  //push the new goal
+					goalStack.push(newGoal);
 					return true;
 				}		
 				break;		
@@ -429,15 +414,13 @@ public class StripsEngine {
 				if(api.IsToTheLeft(source,targed) && api.CanMoveRight(source)){
 					newGoal = new Condition(api,Condition.IS_TO_THE_LEFT,
 													  args,false);
-					// goalStack.pop(); //pop the Old CAN_MOVE_UP/DOWN goal
-					goalStack.push(newGoal);  //push the new goal
+					goalStack.push(newGoal);
 					return true;
 				}
 				if(api.IsToTheRight(source,targed) && api.CanMoveLeft(source)){
 					newGoal = new Condition(api,Condition.IS_TO_THE_RIGHT,
 													  args,false);
-					// goalStack.pop(); //pop the Old CAN_MOVE_UP/DOWN goal
-					goalStack.push(newGoal); //push the new goal
+					goalStack.push(newGoal);
 					return true;
 				}					
 				break;

@@ -811,7 +811,7 @@ public class StripsAPI {
 			return false;
 		}
 		
-		if (y2 == this.ROOM1.getY2()){
+		if (y2 == this.ROOM1.getY1()){
 			if(x1 >= this.DOORWAY_ROOMS12.getX1() && x2 <= this.DOORWAY_ROOMS12.getX2()){ //Door
 				if (game.getRectangleByXAxis(x1, x2, y2+1) == null){
 					return true;
@@ -846,11 +846,8 @@ public class StripsAPI {
 			return false;
 		}
 		
-		if (x1 == this.ROOM3.getX1()) { //cannot move into wall; 
-			return false;
-		}
 		
-		/*if (x1 == this.DOORWAY_ROOMS13.getX2()+1){
+		if (x1 == this.DOORWAY_ROOMS13.getX2()){
 			if(y1 >= this.DOORWAY_ROOMS13.getY1() && y2 <= this.DOORWAY_ROOMS13.getY2()){ //Door
 				if (game.getRectangleByYAxis(x1-1, this.DOORWAY_ROOMS13.getY1(), this.DOORWAY_ROOMS13.getY2()) == null){
 					return true;
@@ -864,7 +861,7 @@ public class StripsAPI {
 				return false;
 			}
 			return false;
-		}*/
+		}
 		
 		if (x1 == this.DOORWAY_ROOMS12.getX1() && y1 <= this.DOORWAY_ROOMS12.getY1() && y2 >= this.DOORWAY_ROOMS12.getY2()){
 			return false;
@@ -890,7 +887,7 @@ public class StripsAPI {
 			return false;
 		}
 		
-		if (x2 == this.DOORWAY_ROOMS13.getX1()-1){
+		if (x2 == this.DOORWAY_ROOMS13.getX1()){
 			if(y1 >= this.DOORWAY_ROOMS13.getY1() && y2 <= this.DOORWAY_ROOMS13.getY2()){ //Door
 				if (game.getRectangleByYAxis(x2+1, this.DOORWAY_ROOMS13.getY1(), this.DOORWAY_ROOMS13.getY2()) == null){
 					return true;
